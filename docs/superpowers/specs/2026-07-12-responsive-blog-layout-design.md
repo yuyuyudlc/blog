@@ -59,15 +59,15 @@
 
 ## 字体策略
 
-使用 Next.js 当前版本支持的字体加载方式，替代 CSS `@import`，减少首屏字体阻塞和排版跳动。
+使用 Next.js 当前版本支持的 `next/font` 加载方式，替代 CSS `@import`。字体文件由站点自托管，不依赖访问者操作系统中已安装的字体，从而减少首屏阻塞、排版跳动和跨平台差异。
 
-- 英文无衬线：IBM Plex Sans。
-- 英文衬线标题：IBM Plex Serif。
-- 等宽信息与代码：IBM Plex Mono。
-- 中文无衬线回退：`PingFang SC`、`Microsoft YaHei`、`Noto Sans CJK SC`、系统无衬线。
-- 中文衬线回退：`Songti SC`、`SimSun`、`Noto Serif CJK SC`、系统衬线。
+- 正文与界面无衬线：Noto Sans SC。该字体同时提供简体中文、英文、数字与标点字形。
+- Hero、卡片和文章衬线标题：Noto Serif SC。该字体同时提供简体中文、英文、数字与标点字形，风格接近当前的技术期刊衬线标题。
+- 等宽信息与代码：IBM Plex Mono。中文代码注释回退至 Noto Sans SC。
 
-移除 Cascadia Code 的最高优先级，确保等宽信息在不同平台上的视觉气质一致。中文字符使用系统已有的高质量 CJK 字体，英文和数字继续由 IBM Plex 系列渲染。
+标题不再使用 `IBM Plex Serif, Georgia, serif` 的系统回退链，避免中文在 Windows 落到宋体、macOS 落到宋体 SC。正文也不再依赖苹方或微软雅黑。页面主要文本在 Windows、macOS 和 Linux 上均使用站点提供的同一份 Noto 字体文件。
+
+移除 Cascadia Code 的最高优先级，确保等宽信息在不同平台上的视觉气质一致。字体仅加载页面实际使用的字重，控制中文字体资源体积。
 
 ## 颜色、动画与可访问性
 
