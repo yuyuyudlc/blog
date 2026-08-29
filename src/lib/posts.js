@@ -22,6 +22,31 @@ const escapeHtml = (value) =>
 
 const getCodeLanguage = (lang = '') => lang.trim().split(/\s+/)[0].toLowerCase();
 
+const CHARACTERS_PER_MINUTE = 400;
+
+const getReadableCharacterCount = (markdown) => {
+  const readableText = markdown
+    .replace(/```[^\n]*\n([\s\S]*?)```/g, '$1')
+    .replace(/`([^`]+)`/g, '$1')
+    .replace(/!\[[^\]]*\]\([^)]*\)/g, '')
+    .replace(/\[([^\]]+)\]\([^)]*\)/g, '$1')
+    .replace(/<[^>]+>/g, '')
+    .replace(/^\s{0,3}(?:#{1,6}|>|[-+*]|\d+[.)])\s+/gm, '')
+    .replace(/[\\*_~]/g, '')
+    .replace(/\s/g, '');
+
+  return Array.from(readableText).length;
+};
+
+const estimateReadingTime = (markdown) => {
+  const minutes = Math.max(
+    1,
+    Math.ceil(getReadableCharacterCount(markdown) / CHARACTERS_PER_MINUTE),
+  );
+
+  return `${minutes} min read`;
+};
+
 const markdownParser = new Marked({
   gfm: true,
   renderer: {
@@ -55,11 +80,12 @@ export function getAllPosts() {
       const fileContents = fs.readFileSync(fullPath, 'utf8');
 
       // Use gray-matter to parse the post metadata section
-      const { data } = matter(fileContents);
+      const { data, content } = matter(fileContents);
 
       return {
         slug,
         ...data,
+        readingTime: estimateReadingTime(content),
       };
     });
 
@@ -88,5 +114,6 @@ export async function getPostBySlug(slug) {
     slug,
     contentHtml,
     ...data,
+    readingTime: estimateReadingTime(content),
   };
 }

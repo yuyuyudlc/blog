@@ -1,6 +1,29 @@
 import "./globals.css";
+import { IBM_Plex_Mono, Noto_Sans_SC, Noto_Serif_SC } from "next/font/google";
+import Script from "next/script";
 import SiteShell from "@/components/site-shell";
 import { siteConfig } from "@/config/site";
+
+const notoSansSC = Noto_Sans_SC({
+  weight: "variable",
+  variable: "--font-noto-sans-sc",
+  display: "swap",
+  preload: false,
+});
+
+const notoSerifSC = Noto_Serif_SC({
+  weight: "variable",
+  variable: "--font-noto-serif-sc",
+  display: "swap",
+  preload: false,
+});
+
+const ibmPlexMono = IBM_Plex_Mono({
+  weight: ["400", "500", "600", "700"],
+  subsets: ["latin"],
+  variable: "--font-ibm-plex-mono",
+  display: "swap",
+});
 
 export const metadata = {
   title: siteConfig.title,
@@ -22,11 +45,17 @@ export default function RootLayout({ children }) {
   `;
 
   return (
-    <html lang="en" suppressHydrationWarning>
-      <head>
-        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
-      </head>
+    <html
+      lang="zh-CN"
+      className={`${notoSansSC.variable} ${notoSerifSC.variable} ${ibmPlexMono.variable}`}
+      suppressHydrationWarning
+    >
       <body id="top">
+        <Script
+          id="theme-initializer"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{ __html: themeScript }}
+        />
         <div className="layout-container">
           <div className="margin-left">
             <div className="junction-node" style={{ right: '-3px', top: '61px' }}></div>

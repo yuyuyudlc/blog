@@ -58,8 +58,10 @@ function showFlashNotification(message) {
 }
 
 function ThemeToggle({ theme, onToggle }) {
+  const nextThemeLabel = theme === 'dark' ? '切换到浅色主题' : '切换到深色主题';
+
   return (
-    <button id="theme-toggle" onClick={onToggle} className="btn-icon" aria-label="Toggle dark/light theme" title="Toggle theme (T)">
+    <button id="theme-toggle" onClick={onToggle} className="btn-icon" aria-label={nextThemeLabel} title={`${nextThemeLabel}（T）`}>
       {theme === 'dark' ? <SunIcon /> : <MoonIcon />}
     </button>
   );
@@ -91,7 +93,7 @@ export default function SiteHeaderControls() {
     document.documentElement.setAttribute('data-theme', newTheme);
     localStorage.setItem(siteConfig.themeStorageKey, newTheme);
     setThemeState(newTheme);
-    showFlashNotification(newTheme === 'dark' ? 'Dark Mode Active' : 'Light Mode Active');
+    showFlashNotification(newTheme === 'dark' ? '已切换到深色主题' : '已切换到浅色主题');
   }, []);
 
   const toggleTheme = useCallback(() => {
@@ -124,7 +126,7 @@ export default function SiteHeaderControls() {
 
   return (
     <>
-      <nav className="site-nav" aria-label="Main navigation">
+      <nav className="site-nav" aria-label="主导航">
         {siteConfig.categories.map((category) => (
           <Link
             key={category.slug}

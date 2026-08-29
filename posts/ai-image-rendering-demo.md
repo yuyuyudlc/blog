@@ -2,9 +2,10 @@
 title: AI 图像渲染示例
 category: AI
 date: June 30, 2026
-readingTime: 4 min read
 tags: [AI, Image, Markdown]
 summary: A compact sample entry for checking how images, captions, and surrounding Markdown content render in the journal layout.
+coverImage: /ai-interface-preview.svg
+coverAlt: AI 界面渲染预览
 ---
 
 This entry is a rendering sample for image-heavy notes. The image below is referenced with plain Markdown syntax, so authors can keep writing posts without using custom React components.

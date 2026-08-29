@@ -1,12 +1,14 @@
 import Link from 'next/link';
 import SiteHeaderControls from '@/components/site-header-controls';
+import { TatamiMark } from '@/components/tatami-motif';
 import { siteConfig } from '@/config/site';
 
 function SiteHeader() {
   return (
     <header className="site-header">
-      <Link href="/" className="logo-group" aria-label={`${siteConfig.name} home`}>
-        <span className="wordmark">&gt;_ {siteConfig.name}</span>
+      <Link href="/" className="logo-group" aria-label={`${siteConfig.name} 首页`}>
+        <TatamiMark />
+        <span className="wordmark">{siteConfig.name}</span>
       </Link>
 
       <SiteHeaderControls />
@@ -20,13 +22,14 @@ function SiteHeader() {
 function SiteFooter() {
   return (
     <footer className="site-footer">
-      <div>
+      <div className="footer-brand">
+        <TatamiMark className="footer-tatami-mark" />
         <span>{siteConfig.copyright}</span>
       </div>
       <div className="footer-nav">
-        <Link href="/">Journal Hub</Link>
+        <Link href="/">文章列表</Link>
         <span>/</span>
-        <a href="#top">Back to Top</a>
+        <a href="#top">返回顶部</a>
       </div>
     </footer>
   );

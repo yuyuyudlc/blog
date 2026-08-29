@@ -2,7 +2,9 @@ import { notFound } from 'next/navigation';
 import ArticleBackLink from '@/components/article-back-link';
 import ArticleImagePreview from '@/components/article-image-preview';
 import ArticleMetaSidebar from '@/components/article-meta-sidebar';
+import GiscusComments from '@/components/giscus-comments';
 import { FrameNodes } from '@/components/frame';
+import { getGiscusConfig } from '@/lib/giscus-config.mjs';
 import { getAllPosts, getPostBySlug } from '@/lib/posts';
 import { siteConfig } from '@/config/site';
 
@@ -36,6 +38,8 @@ export default async function Post({ params }) {
     notFound();
   }
 
+  const commentsConfig = getGiscusConfig();
+
   return (
     <div id="post-view">
       <div className="post-detail-layout framed-section">
@@ -60,10 +64,12 @@ export default async function Post({ params }) {
 
           <footer className="post-article-footer">
             <div>
-              <span className="post-footer-label">END OF ENTRY</span>
+              <span className="post-footer-label">文章结束</span>
               <span>{siteConfig.copyright}</span>
             </div>
           </footer>
+
+          <GiscusComments config={commentsConfig} />
         </main>
       </div>
     </div>
