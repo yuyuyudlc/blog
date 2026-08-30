@@ -4,7 +4,7 @@ category: AI
 date: June 30, 2026
 tags: [AI, Image, Markdown]
 summary: A compact sample entry for checking how images, captions, and surrounding Markdown content render in the journal layout.
-coverImage: /ai-interface-preview.svg
+coverImage:
 coverAlt: AI 界面渲染预览
 ---
 
