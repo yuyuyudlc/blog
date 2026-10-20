@@ -1,23 +1,21 @@
 import { notFound } from 'next/navigation';
-import HomeHero from '@/components/home-hero';
+import CategoryRoomHeader from '@/components/category-room-header';
 import { DividerSlash } from '@/components/frame';
-import { PostGrid } from '@/components/post-card';
+import { PostList } from '@/components/post-list';
 import PostPagination from '@/components/post-pagination';
 import { siteConfig } from '@/config/site';
 import { paginatePosts } from '@/lib/post-pagination.mjs';
-import { getAllPosts } from '@/lib/posts';
-
-const filterCategories = siteConfig.categories.filter((category) => category.slug !== 'all');
+import { getAllPosts, getCategoryBySlug } from '@/lib/posts';
 
 export function generateStaticParams() {
-  return filterCategories.map((category) => ({
+  return siteConfig.categories.map((category) => ({
     category: category.slug,
   }));
 }
 
 export async function generateMetadata({ params }) {
   const { category: categorySlug } = await params;
-  const category = filterCategories.find((item) => item.slug === categorySlug);
+  const category = getCategoryBySlug(categorySlug);
 
   if (!category) {
     return {
@@ -27,14 +25,14 @@ export async function generateMetadata({ params }) {
 
   return {
     title: `${category.label} | ${siteConfig.name}`,
-    description: `${siteConfig.name} 的${category.label}分类文章。`,
+    description: `${siteConfig.name} · ROOM ${category.numeral}（${category.label}）分类日志。`,
   };
 }
 
 export default async function CategoryPage({ params, searchParams }) {
   const { category: categorySlug } = await params;
   const query = await searchParams;
-  const category = filterCategories.find((item) => item.slug === categorySlug);
+  const category = getCategoryBySlug(categorySlug);
 
   if (!category) {
     notFound();
@@ -45,10 +43,15 @@ export default async function CategoryPage({ params, searchParams }) {
   const page = paginatePosts(posts, pageValue);
 
   return (
-    <div id="home-view">
-      <HomeHero />
+    <div id="category-view">
+      <CategoryRoomHeader category={category} count={posts.length} />
       <DividerSlash />
-      <PostGrid posts={page.posts} activeCategory={category.label} />
+      <PostList
+        posts={page.posts}
+        activeCategorySlug={category.slug}
+        showFeatured={false}
+        headingTitle={`ROOM ${category.numeral} · ${category.label}`}
+      />
       <PostPagination
         currentPage={page.currentPage}
         totalPages={page.totalPages}

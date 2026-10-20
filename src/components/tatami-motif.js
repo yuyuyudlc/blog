@@ -3,63 +3,57 @@ export function TatamiMark({ className = '' }) {
     <span className={`tatami-mark ${className}`.trim()} aria-hidden="true">
       <span className="tatami-mark-line tatami-mark-line-top"></span>
       <span className="tatami-mark-line tatami-mark-line-right"></span>
-      <span className="tatami-mark-line tatami-mark-line-middle"></span>
+      <span className="tatami-mark-line tatami-mark-line-bottom"></span>
       <span className="tatami-mark-line tatami-mark-line-left"></span>
     </span>
   );
 }
 
-function TatamiJunction({ className }) {
-  return <span className={`tatami-plan-junction ${className}`}></span>;
-}
-
-function GridExtension({ className }) {
+export function TatamiChip({ label, className = '' }) {
   return (
-    <span className={`offset-grid-extension ${className}`}>
-      <span className="offset-grid-extension-line offset-grid-extension-line-1"></span>
-      <span className="offset-grid-extension-line offset-grid-extension-line-2"></span>
-      <span className="offset-grid-extension-line offset-grid-extension-line-3"></span>
+    <span className={`post-row-category ${className}`.trim()}>
+      <span className="tatami-chip-icon" aria-hidden="true"></span>
+      {label && <span>{label}</span>}
     </span>
   );
 }
 
-export function TatamiPlan({ className = '', variant = 'balanced' }) {
-  return (
-    <div className={`tatami-plan tatami-plan-${variant} ${className}`.trim()} aria-hidden="true">
-      <span className="tatami-panel tatami-panel-one"></span>
-      <span className="tatami-panel tatami-panel-two"></span>
-      <span className="tatami-panel tatami-panel-three"></span>
-      <span className="tatami-panel tatami-panel-four"></span>
-      <span className="tatami-panel tatami-panel-half"></span>
-      <span className="tatami-construction-line tatami-construction-line-one"></span>
-      <span className="tatami-construction-line tatami-construction-line-two"></span>
-      <span className="tatami-construction-line tatami-construction-line-three"></span>
-      <span className="tatami-construction-line tatami-construction-line-four"></span>
-      <TatamiJunction className="tatami-plan-junction-top-left" />
-      <TatamiJunction className="tatami-plan-junction-top-right" />
-      <TatamiJunction className="tatami-plan-junction-bottom-left" />
-      <TatamiJunction className="tatami-plan-junction-bottom-right" />
-    </div>
-  );
-}
+export function InfiniteRoom({ layers = 9 }) {
+  const rings = Array.from({ length: layers }, (_, index) => {
+    const size = Math.round(980 * Math.pow(0.72, index));
+    const opacity = Math.max(0.32, Number((1 - index * 0.08).toFixed(2)));
+    const borderWidth = Math.max(1, Number((2.5 - index * 0.2).toFixed(2)));
+    const rotation = (index * 90) % 360;
 
-export function OffsetSquareGrid({ className = '' }) {
+    return {
+      index,
+      size,
+      opacity,
+      borderWidth,
+      rotation,
+    };
+  });
+
   return (
-    <div className={`offset-square-grid ${className}`.trim()} aria-hidden="true">
-      <span className="offset-square-grid-layer offset-square-grid-layer-1"></span>
-      <span className="offset-square-grid-layer offset-square-grid-layer-2"></span>
-      <span className="offset-square-grid-layer offset-square-grid-layer-3"></span>
-      <span className="offset-square-grid-layer offset-square-grid-layer-4"></span>
-      <span className="offset-square-grid-layer offset-square-grid-layer-5"></span>
-      <span className="offset-square-grid-layer offset-square-grid-layer-6"></span>
-      <span className="offset-square-grid-layer offset-square-grid-layer-7"></span>
-      <span className="offset-square-grid-layer offset-square-grid-layer-8"></span>
-      <span className="offset-square-grid-layer offset-square-grid-layer-9"></span>
-      <span className="offset-square-grid-layer offset-square-grid-layer-10"></span>
-      <GridExtension className="offset-grid-extension-top" />
-      <GridExtension className="offset-grid-extension-right" />
-      <GridExtension className="offset-grid-extension-bottom" />
-      <GridExtension className="offset-grid-extension-left" />
-    </div>
+    <>
+      {rings.map((ring) => (
+        <div
+          key={ring.index}
+          className="infinite-room-ring"
+          style={{
+            width: `${ring.size}px`,
+            opacity: ring.opacity,
+            borderWidth: `${ring.borderWidth}px`,
+            transform: `rotate(${ring.rotation}deg)`,
+          }}
+          aria-hidden="true"
+        >
+          <span className="infinite-room-seam infinite-room-seam-top"></span>
+          <span className="infinite-room-seam infinite-room-seam-right"></span>
+          <span className="infinite-room-seam infinite-room-seam-bottom"></span>
+          <span className="infinite-room-seam infinite-room-seam-left"></span>
+        </div>
+      ))}
+    </>
   );
 }

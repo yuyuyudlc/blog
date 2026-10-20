@@ -1,0 +1,123 @@
+/* ==========================================================================
+   DESIGN TOKENS — COLD NEUTRAL TATAMI & ZED SYSTEM
+   ========================================================================== */
+
+:root {
+  /* Typography */
+  --font-sans: var(--font-noto-sans-sc), -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-serif: var(--font-noto-serif-sc), "Songti SC", "SimSun", serif;
+  --font-mono: var(--font-ibm-plex-mono), var(--font-noto-sans-sc), monospace;
+
+  /* Motion */
+  --duration-fast: 120ms;
+  --duration-normal: 150ms;
+  --easing: cubic-bezier(0.4, 0, 0.2, 1);
+  --hero-easing: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* Layout Dimensions */
+  --rail-width: 16px;
+  --container-width: 1080px;
+  --header-height: 56px;
+
+  /* Spacing Scale (8-step) */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 28px;
+  --space-7: 48px;
+  --space-8: 72px;
+
+  /* Structure & Surfaces — Light Mode (Cool Neutral) */
+  --bg-color: #f7f8fa;
+  --rail-color: #f1f3f6;
+  --surface-color: #fbfcfd;
+  --border-color: #dfe3e9;
+  --border-strong: #c5ccd6;
+
+  /* Text */
+  --text-color: #16191f;
+  --text-muted: #5f6773;
+
+  /* Interactive Accent (Zed Blue) */
+  --accent-color: #1348dc;
+  --accent-hover: #0f3bb8;
+  --accent-soft: #e6ecfb;
+
+  /* Tatami Cold Palette */
+  --heri: #1e2a44;
+  --mat: #eceff4;
+  --mat-half: #e1e6ee;
+  --weave: rgb(30 42 68 / 0.08);
+  --weave-accent: rgb(19 72 220 / 0.14);
+
+  /* Code Syntax & Window */
+  --code-bg: #fbfcfd;
+  --tab-bg: #f1f3f6;
+  --code-text: #24292f;
+  --code-comment: #6b7280;
+  --code-keyword: #1348dc;
+  --code-title: #8250df;
+  --code-string: #0a7a5b;
+  --code-number: #8a4b11;
+  --code-symbol: #953800;
+  --code-meta: #57606a;
+
+  /* Overlays */
+  --image-preview-backdrop: rgba(17, 20, 24, 0.86);
+  --image-preview-surface: var(--bg-color);
+}
+
+[data-theme="dark"] {
+  /* Structure & Surfaces — Dark Mode (Deep Cool Slate) */
+  --bg-color: #111418;
+  --rail-color: #14181d;
+  --surface-color: #161a20;
+  --border-color: #242a33;
+  --border-strong: #333b46;
+
+  /* Text */
+  --text-color: #dfe3ea;
+  --text-muted: #9aa2ae;
+
+  /* Interactive Accent */
+  --accent-color: #5b94ff;
+  --accent-hover: #7aa8ff;
+  --accent-soft: #18213a;
+
+  /* Tatami Cold Palette */
+  --heri: #7d90bf;
+  --mat: #181d24;
+  --mat-half: #1e2430;
+  --weave: rgb(125 144 191 / 0.09);
+  --weave-accent: rgb(91 148 255 / 0.16);
+
+  /* Code Syntax & Window */
+  --code-bg: #14181d;
+  --tab-bg: #181d24;
+  --code-text: #d6deeb;
+  --code-comment: #7c8493;
+  --code-keyword: #7aa2f7;
+  --code-title: #bb9af7;
+  --code-string: #9ece6a;
+  --code-number: #ff9e64;
+  --code-symbol: #f7768e;
+  --code-meta: #89ddff;
+
+  /* Overlays */
+  --image-preview-backdrop: rgba(8, 10, 14, 0.88);
+  --image-preview-surface: var(--bg-color);
+}
+
+@media (min-width: 640px) and (max-width: 767px) {
+  :root {
+    --rail-width: 24px;
+  }
+}
+
+@media (min-width: 768px) {
+  :root {
+    --rail-width: 48px;
+  }
+}

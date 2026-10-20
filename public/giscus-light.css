@@ -1,6 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=Noto+Sans+SC:wght@400;500;600&display=swap");
 
-/* Matches the warm, paper-like light theme used by dev.log Journal. */
+/* Matches the cool neutral light theme used by dev.log Journal. */
 main {
   color-scheme: light;
   --color-prettylights-syntax-comment: #6b7280;
@@ -27,28 +27,28 @@ main {
   --color-prettylights-syntax-markup-inserted-bg: #dafbe1;
   --color-prettylights-syntax-markup-changed-text: #8a4b11;
   --color-prettylights-syntax-markup-changed-bg: #fff1db;
-  --color-prettylights-syntax-markup-ignored-text: #f7f7f2;
+  --color-prettylights-syntax-markup-ignored-text: #f7f8fa;
   --color-prettylights-syntax-markup-ignored-bg: #1348dc;
   --color-prettylights-syntax-meta-diff-range: #8250df;
-  --color-prettylights-syntax-brackethighlighter-angle: #626b79;
+  --color-prettylights-syntax-brackethighlighter-angle: #5f6773;
   --color-prettylights-syntax-sublimelinter-gutter-mark: #9298a2;
   --color-prettylights-syntax-constant-other-reference-link: #1348dc;
-  --color-btn-text: #202124;
-  --color-btn-bg: #fbfbf8;
-  --color-btn-border: #c9cdd4;
+  --color-btn-text: #16191f;
+  --color-btn-bg: #fbfcfd;
+  --color-btn-border: #c5ccd6;
   --color-btn-shadow: 0 1px 0 rgb(17 20 24 / 4%);
   --color-btn-inset-shadow: inset 0 1px 0 rgb(255 255 255 / 40%);
-  --color-btn-hover-bg: #f0f1ed;
+  --color-btn-hover-bg: #f1f3f6;
   --color-btn-hover-border: #9da4af;
-  --color-btn-active-bg: #e8e9e5;
+  --color-btn-active-bg: #e8ecf2;
   --color-btn-active-border: #8e96a2;
-  --color-btn-selected-bg: #eceeea;
+  --color-btn-selected-bg: #eceff4;
   --color-btn-primary-text: #fff;
   --color-btn-primary-bg: #1348dc;
   --color-btn-primary-border: #103db9;
   --color-btn-primary-shadow: 0 1px 0 rgb(17 20 24 / 10%);
   --color-btn-primary-inset-shadow: inset 0 1px 0 rgb(255 255 255 / 14%);
-  --color-btn-primary-hover-bg: #103db9;
+  --color-btn-primary-hover-bg: #0f3bb8;
   --color-btn-primary-hover-border: #0c329b;
   --color-btn-primary-selected-bg: #0c329b;
   --color-btn-primary-selected-shadow: inset 0 1px 0 rgb(0 0 0 / 16%);
@@ -56,19 +56,19 @@ main {
   --color-btn-primary-disabled-bg: #7d9ae8;
   --color-btn-primary-disabled-border: #7d9ae8;
   --color-action-list-item-default-hover-bg: rgb(19 72 220 / 7%);
-  --color-segmented-control-bg: #eceeea;
-  --color-segmented-control-button-bg: #fbfbf8;
+  --color-segmented-control-bg: #eceff4;
+  --color-segmented-control-button-bg: #fbfcfd;
   --color-segmented-control-button-selected-border: #9298a2;
-  --color-fg-default: #1f2023;
-  --color-fg-muted: #626b79;
+  --color-fg-default: #16191f;
+  --color-fg-muted: #5f6773;
   --color-fg-subtle: #737c89;
-  --color-canvas-default: #f7f7f2;
-  --color-canvas-overlay: #fbfbf8;
-  --color-canvas-inset: #f0f1ed;
-  --color-canvas-subtle: #fbfbf8;
-  --color-border-default: #dadde2;
-  --color-border-muted: #e5e6e3;
-  --color-neutral-muted: rgb(98 107 121 / 14%);
+  --color-canvas-default: #f7f8fa;
+  --color-canvas-overlay: #fbfcfd;
+  --color-canvas-inset: #f1f3f6;
+  --color-canvas-subtle: #fbfcfd;
+  --color-border-default: #dfe3e9;
+  --color-border-muted: #e6eaf0;
+  --color-neutral-muted: rgb(95 103 115 / 14%);
   --color-accent-fg: #1348dc;
   --color-accent-emphasis: #718096;
   --color-accent-muted: rgb(19 72 220 / 28%);
@@ -80,9 +80,9 @@ main {
   --color-danger-fg: #b42318;
   --color-danger-muted: rgb(180 35 24 / 24%);
   --color-danger-subtle: rgb(180 35 24 / 7%);
-  --color-primer-shadow-inset: inset 0 1px 0 rgb(98 107 121 / 10%);
-  --color-scale-gray-1: #eceeea;
-  --color-scale-blue-1: #dce6ff;
+  --color-primer-shadow-inset: inset 0 1px 0 rgb(95 103 115 / 10%);
+  --color-scale-gray-1: #eceff4;
+  --color-scale-blue-1: #e6ecfb;
   --color-social-reaction-bg-hover: var(--color-scale-gray-1);
   --color-social-reaction-bg-reacted-hover: var(--color-scale-blue-1);
   font-family: "Noto Sans SC", sans-serif;
@@ -91,7 +91,7 @@ main {
 main .gsc-comment-box-textarea,
 main .form-control {
   border-radius: 4px;
-  background-color: #fbfbf8;
+  background-color: #fbfcfd;
   box-shadow: none;
   font-family: "Noto Sans SC", sans-serif;
   line-height: 1.65;

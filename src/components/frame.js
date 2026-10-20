@@ -1,18 +1,15 @@
-export function FrameNodes({ className = '' }) {
+export function FrameNodes({ positions = [], className = '' }) {
+  if (!positions.length) return null;
+
   return (
     <>
-      <div className={`junction-node top-left ${className}`}></div>
-      <div className={`junction-node top-right ${className}`}></div>
-      <div className={`junction-node bottom-left ${className}`}></div>
-      <div className={`junction-node bottom-right ${className}`}></div>
+      {positions.map((pos) => (
+        <div key={pos} className={`junction-node ${pos} ${className}`.trim()} aria-hidden="true"></div>
+      ))}
     </>
   );
 }
 
 export function DividerSlash() {
-  return (
-    <section className="divider-slash" aria-hidden="true">
-      <div className="divider-slash-pattern"></div>
-    </section>
-  );
+  return <section className="divider-slash" aria-hidden="true"></section>;
 }

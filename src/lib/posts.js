@@ -1,72 +1,20 @@
 import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
-import { Marked } from 'marked';
-import hljs from 'highlight.js/lib/core';
-import javascript from 'highlight.js/lib/languages/javascript';
-import rust from 'highlight.js/lib/languages/rust';
+import { siteConfig } from '@/config/site';
+import {
+  estimateReadingTime,
+  getReadableCharacterCount,
+  renderMarkdown,
+} from '@/lib/markdown';
+import { parsePostDate } from '@/lib/post-display.mjs';
 
 const postsDirectory = path.join(process.cwd(), 'posts');
 
-hljs.registerLanguage('javascript', javascript);
-hljs.registerLanguage('rust', rust);
-hljs.registerAliases(['js', 'jsx'], { languageName: 'javascript' });
-
-const escapeHtml = (value) =>
-  value
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
-
-const getCodeLanguage = (lang = '') => lang.trim().split(/\s+/)[0].toLowerCase();
-
-const CHARACTERS_PER_MINUTE = 400;
-
-const getReadableCharacterCount = (markdown) => {
-  const readableText = markdown
-    .replace(/```[^\n]*\n([\s\S]*?)```/g, '$1')
-    .replace(/`([^`]+)`/g, '$1')
-    .replace(/!\[[^\]]*\]\([^)]*\)/g, '')
-    .replace(/\[([^\]]+)\]\([^)]*\)/g, '$1')
-    .replace(/<[^>]+>/g, '')
-    .replace(/^\s{0,3}(?:#{1,6}|>|[-+*]|\d+[.)])\s+/gm, '')
-    .replace(/[\\*_~]/g, '')
-    .replace(/\s/g, '');
-
-  return Array.from(readableText).length;
-};
-
-const estimateReadingTime = (markdown) => {
-  const minutes = Math.max(
-    1,
-    Math.ceil(getReadableCharacterCount(markdown) / CHARACTERS_PER_MINUTE),
-  );
-
-  return `${minutes} min read`;
-};
-
-const markdownParser = new Marked({
-  gfm: true,
-  renderer: {
-    code({ text, lang }) {
-      const language = getCodeLanguage(lang);
-      const canHighlight = language && hljs.getLanguage(language);
-      const html = canHighlight
-        ? hljs.highlight(text, { language, ignoreIllegals: true }).value
-        : escapeHtml(text);
-      const languageClass = language ? ` language-${escapeHtml(language)}` : '';
-      const languageLabel = language ? ` data-language="${escapeHtml(language.toUpperCase())}"` : '';
-
-      return `<pre${languageLabel}><code class="hljs${languageClass}">${html}</code></pre>`;
-    },
-  },
-});
-
-// Helper to get sorted posts list (for the home page listing)
+/**
+ * Returns all Markdown posts sorted from newest to oldest.
+ */
 export function getAllPosts() {
-  // Ensure the directory exists
   if (!fs.existsSync(postsDirectory)) {
     return [];
   }
@@ -78,24 +26,23 @@ export function getAllPosts() {
       const slug = fileName.replace(/\.md$/, '');
       const fullPath = path.join(postsDirectory, fileName);
       const fileContents = fs.readFileSync(fullPath, 'utf8');
-
-      // Use gray-matter to parse the post metadata section
       const { data, content } = matter(fileContents);
+      const charCount = getReadableCharacterCount(content);
 
       return {
         slug,
         ...data,
+        charCount,
         readingTime: estimateReadingTime(content),
       };
     });
 
-  // Sort posts by date (newest first)
-  return allPostsData.sort((a, b) => {
-    return new Date(b.date) - new Date(a.date);
-  });
+  return allPostsData.sort((a, b) => new Date(b.date) - new Date(a.date));
 }
 
-// Helper to get detailed post data (slug, parsed HTML content, and metadata)
+/**
+ * Loads a single post by slug, including rendered HTML and TOC headings.
+ */
 export async function getPostBySlug(slug) {
   const fullPath = path.join(postsDirectory, `${slug}.md`);
   if (!fs.existsSync(fullPath)) {
@@ -103,17 +50,62 @@ export async function getPostBySlug(slug) {
   }
 
   const fileContents = fs.readFileSync(fullPath, 'utf8');
-
-  // Use gray-matter to parse metadata and content
   const { data, content } = matter(fileContents);
-
-  // Convert markdown to HTML and highlight fenced code blocks during rendering.
-  const contentHtml = markdownParser.parse(content);
+  const { contentHtml, headings } = renderMarkdown(content);
+  const charCount = getReadableCharacterCount(content);
 
   return {
     slug,
     contentHtml,
+    headings,
     ...data,
+    charCount,
     readingTime: estimateReadingTime(content),
   };
+}
+
+/**
+ * Returns a map of `{ [categorySlug]: postCount }`.
+ */
+export function getCategoryStats(posts = getAllPosts()) {
+  return Object.fromEntries(
+    siteConfig.categories.map((category) => [
+      category.slug,
+      posts.filter((post) => post.category === category.label).length,
+    ]),
+  );
+}
+
+export function getCategoryByLabel(label) {
+  return siteConfig.categories.find((category) => category.label === label) || null;
+}
+
+export function getCategoryBySlug(slug) {
+  return siteConfig.categories.find((category) => category.slug === slug) || null;
+}
+
+/**
+ * Returns the adjacent `{ newer, older }` posts relative to `slug`.
+ */
+export function getAdjacentPosts(slug, posts = getAllPosts()) {
+  const index = posts.findIndex((post) => post.slug === slug);
+  if (index === -1) {
+    return { newer: null, older: null };
+  }
+
+  return {
+    newer: posts[index - 1] ?? null,
+    older: posts[index + 1] ?? null,
+  };
+}
+
+/**
+ * Checks whether a post was published within the last `days` days.
+ */
+export function isRecentPost(dateValue, days = 7) {
+  const date = parsePostDate(dateValue);
+  if (!date) return false;
+
+  const diffMs = Date.now() - date.getTime();
+  return diffMs >= 0 && diffMs <= days * 86400000;
 }

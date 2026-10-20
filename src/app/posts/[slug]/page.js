@@ -1,12 +1,20 @@
 import { notFound } from 'next/navigation';
 import ArticleBackLink from '@/components/article-back-link';
+import ArticleCodeCopy from '@/components/article-code-copy';
 import ArticleImagePreview from '@/components/article-image-preview';
 import ArticleMetaSidebar from '@/components/article-meta-sidebar';
-import GiscusComments from '@/components/giscus-comments';
 import { FrameNodes } from '@/components/frame';
-import { getGiscusConfig } from '@/lib/giscus-config.mjs';
-import { getAllPosts, getPostBySlug } from '@/lib/posts';
+import GiscusComments from '@/components/giscus-comments';
+import PostLoopNav from '@/components/post-loop-nav';
 import { siteConfig } from '@/config/site';
+import { getGiscusConfig } from '@/lib/giscus-config.mjs';
+import {
+  getAdjacentPosts,
+  getAllPosts,
+  getCategoryByLabel,
+  getCategoryStats,
+  getPostBySlug,
+} from '@/lib/posts';
 
 export function generateStaticParams() {
   return getAllPosts().map((post) => ({
@@ -38,39 +46,50 @@ export default async function Post({ params }) {
     notFound();
   }
 
+  const allPosts = getAllPosts();
+  const stats = getCategoryStats(allPosts);
+  const categoryInfo = getCategoryByLabel(post.category);
+  const categoryCount = categoryInfo ? stats[categoryInfo.slug] ?? 0 : 0;
+  const { newer, older } = getAdjacentPosts(slug, allPosts);
+  const slugs = allPosts.map((item) => item.slug);
   const commentsConfig = getGiscusConfig();
 
   return (
     <div id="post-view">
       <div className="post-detail-layout framed-section">
-        <FrameNodes />
-        <ArticleMetaSidebar post={post} />
+        <FrameNodes positions={['top-left', 'top-right', 'bottom-left', 'bottom-right']} />
+
+        <ArticleMetaSidebar
+          post={post}
+          categoryInfo={categoryInfo}
+          categoryCount={categoryCount}
+        />
 
         <main className="post-main">
-          <ArticleBackLink />
+          <ArticleBackLink
+            category={post.category}
+            categoryInfo={categoryInfo}
+          />
 
-          <article className="post-header">
+          <header className="post-header">
             <h1 className="post-title-main">{post.title}</h1>
-            <div className="horizontal-border-guide" style={{ marginTop: '24px' }}>
-              <div className="junction-node bottom-left"></div>
-            </div>
-          </article>
+            <span className="junction-node post-header-node" aria-hidden="true"></span>
+          </header>
 
           <section
             className="post-content"
             dangerouslySetInnerHTML={{ __html: post.contentHtml }}
           />
+          <ArticleCodeCopy />
           <ArticleImagePreview />
 
-          <footer className="post-article-footer">
-            <div>
-              <span className="post-footer-label">文章结束</span>
-              <span>{siteConfig.copyright}</span>
-            </div>
-          </footer>
+          <PostLoopNav older={older} newer={newer} slugs={slugs} />
 
           <GiscusComments config={commentsConfig} />
         </main>
+
+        <span className="junction-node post-sidebar-t-junction-top" aria-hidden="true"></span>
+        <span className="junction-node post-sidebar-t-junction" aria-hidden="true"></span>
       </div>
     </div>
   );

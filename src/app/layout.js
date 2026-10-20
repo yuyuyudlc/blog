@@ -57,25 +57,15 @@ export default function RootLayout({ children }) {
           dangerouslySetInnerHTML={{ __html: themeScript }}
         />
         <div className="layout-container">
-          <div className="margin-left">
-            <div className="junction-node" style={{ right: '-3px', top: '61px' }}></div>
-          </div>
-
-          <div className="gutter-left">
-            <div className="junction-node" style={{ right: '-3px', top: '61px' }}></div>
-          </div>
+          <div className="margin-left"></div>
+          <div className="gutter-left"></div>
 
           <div className="workspace-wrapper">
             <SiteShell>{children}</SiteShell>
           </div>
 
-          <div className="gutter-right">
-            <div className="junction-node" style={{ left: '-3px', top: '61px' }}></div>
-          </div>
-
-          <div className="margin-right">
-            <div className="junction-node" style={{ left: '-3px', top: '61px' }}></div>
-          </div>
+          <div className="gutter-right"></div>
+          <div className="margin-right"></div>
         </div>
       </body>
     </html>

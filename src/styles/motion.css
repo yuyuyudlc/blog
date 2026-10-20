@@ -1,0 +1,100 @@
+/* ==========================================================================
+   ZED-STYLE GEOMETRIC ANIMATIONS & REDUCED MOTION
+   ========================================================================== */
+
+@keyframes blueprint-pulse-y {
+  0% {
+    transform: translateY(-14px);
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
+  70% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(38px);
+    opacity: 0;
+  }
+}
+
+@keyframes blueprint-pulse-y-rev {
+  0% {
+    transform: translateY(14px);
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
+  70% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-38px);
+    opacity: 0;
+  }
+}
+
+@keyframes blueprint-pulse-x {
+  0% {
+    transform: translateX(-14px);
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
+  70% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(38px);
+    opacity: 0;
+  }
+}
+
+@keyframes blueprint-pulse-x-rev {
+  0% {
+    transform: translateX(14px);
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
+  70% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(-38px);
+    opacity: 0;
+  }
+}
+
+@keyframes blueprint-drift-outer {
+  0% {
+    transform: translate(calc(-50% + 10px), calc(-50% - 8px));
+  }
+  100% {
+    transform: translate(calc(-50% - 6px), calc(-50% + 6px));
+  }
+}
+
+@keyframes blueprint-drift-mid {
+  0% {
+    transform: translate(calc(-50% - 9px), calc(-50% + 7px));
+  }
+  100% {
+    transform: translate(calc(-50% + 7px), calc(-50% - 5px));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

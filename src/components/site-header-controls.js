@@ -1,14 +1,16 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { useCallback, useEffect, useState } from 'react';
-import { postCategoryBySlug } from '@/config/post-categories';
+import { usePathname, useRouter } from 'next/navigation';
+import { useMemo } from 'react';
 import { siteConfig } from '@/config/site';
+import { useKeyboardShortcuts } from '@/hooks/use-keyboard-shortcuts';
+import { useRandomPostNavigation } from '@/hooks/use-random-post';
+import { useTheme } from '@/hooks/use-theme';
 
 function SunIcon() {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
       <circle cx="12" cy="12" r="4" />
       <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
     </svg>
@@ -17,128 +19,87 @@ function SunIcon() {
 
 function MoonIcon() {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
       <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
     </svg>
   );
-}
-
-function showFlashNotification(message) {
-  let toast = document.getElementById(siteConfig.toastId);
-
-  if (!toast) {
-    toast = document.createElement('div');
-    toast.id = siteConfig.toastId;
-    toast.style.cssText = `
-      position: fixed;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%) translateY(100px);
-      background-color: var(--accent-color);
-      color: #fff;
-      font-family: var(--font-mono);
-      font-size: 0.8rem;
-      font-weight: 500;
-      padding: 8px 16px;
-      border-radius: 4px;
-      z-index: 200;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-      pointer-events: none;
-    `;
-    document.body.appendChild(toast);
-  }
-
-  toast.textContent = message;
-  toast.style.transform = 'translateX(-50%) translateY(0)';
-
-  window.setTimeout(() => {
-    toast.style.transform = 'translateX(-50%) translateY(100px)';
-  }, 2000);
 }
 
 function ThemeToggle({ theme, onToggle }) {
   const nextThemeLabel = theme === 'dark' ? '切换到浅色主题' : '切换到深色主题';
 
   return (
-    <button id="theme-toggle" onClick={onToggle} className="btn-icon" aria-label={nextThemeLabel} title={`${nextThemeLabel}（T）`}>
+    <button
+      id="theme-toggle"
+      type="button"
+      onClick={onToggle}
+      className="btn-icon"
+      aria-label={nextThemeLabel}
+      title={`${nextThemeLabel}（T）`}
+    >
       {theme === 'dark' ? <SunIcon /> : <MoonIcon />}
     </button>
   );
 }
 
-export default function SiteHeaderControls() {
+export default function SiteHeaderControls({ slugs = [] }) {
   const pathname = usePathname();
-  const [theme, setThemeState] = useState('dark');
-  const isHome = pathname === '/';
-  const activeCategory = isHome
-    ? 'all'
-    : pathname.startsWith('/category/')
-      ? pathname.split('/')[2]
-      : pathname.startsWith('/posts/')
-        ? postCategoryBySlug[pathname.split('/')[2]] || ''
-        : '';
+  const router = useRouter();
+  const { theme, toggleTheme } = useTheme();
+  const goRandom = useRandomPostNavigation(slugs);
 
-  useEffect(() => {
-    const frame = window.requestAnimationFrame(() => {
-      setThemeState(document.documentElement.getAttribute('data-theme') || 'dark');
-    });
+  const shortcuts = useMemo(
+    () => ({
+      t: toggleTheme,
+      r: goRandom,
+      h: () => {
+        if (pathname !== '/') {
+          router.push('/');
+        }
+      },
+    }),
+    [goRandom, pathname, router, toggleTheme],
+  );
 
-    return () => {
-      window.cancelAnimationFrame(frame);
-    };
-  }, []);
+  useKeyboardShortcuts(shortcuts);
 
-  const setTheme = useCallback((newTheme) => {
-    document.documentElement.setAttribute('data-theme', newTheme);
-    localStorage.setItem(siteConfig.themeStorageKey, newTheme);
-    setThemeState(newTheme);
-    showFlashNotification(newTheme === 'dark' ? '已切换到深色主题' : '已切换到浅色主题');
-  }, []);
-
-  const toggleTheme = useCallback(() => {
-    setTheme(theme === 'dark' ? 'light' : 'dark');
-  }, [setTheme, theme]);
-
-  useEffect(() => {
-    const handleKeyDown = (event) => {
-      const activeElement = document.activeElement;
-      const isInputActive =
-        activeElement &&
-        (activeElement.tagName === 'INPUT' ||
-          activeElement.tagName === 'TEXTAREA' ||
-          activeElement.isContentEditable);
-
-      if (isInputActive) return;
-
-      const key = event.key.toLowerCase();
-
-      if (key === 't') {
-        event.preventDefault();
-        toggleTheme();
-      }
-
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [toggleTheme]);
+  const isNavItemActive = (href) => {
+    if (href === '/') {
+      return (
+        pathname === '/' ||
+        pathname.startsWith('/posts/') ||
+        pathname.startsWith('/category/')
+      );
+    }
+    return pathname.startsWith(href);
+  };
 
   return (
     <>
       <nav className="site-nav" aria-label="主导航">
-        {siteConfig.categories.map((category) => (
+        {siteConfig.nav.map((item) => (
           <Link
-            key={category.slug}
-            href={category.slug === 'all' ? '/#archive' : `/category/${category.slug}#archive`}
-            className={`nav-link category-tab category-tab-${category.slug} ${activeCategory === category.slug ? 'active' : ''}`}
+            key={item.href}
+            href={item.href}
+            className={`nav-link ${isNavItemActive(item.href) ? 'active' : ''}`.trim()}
           >
-            {category.label}
+            {item.label}
           </Link>
         ))}
       </nav>
 
       <div className="nav-actions">
+        <button
+          type="button"
+          onClick={goRandom}
+          className="nav-random-btn"
+          title="随机穿越到一篇日志（R）"
+          aria-label="随机阅读一篇日志"
+        >
+          <span className="nav-random-label">随机</span>
+          <kbd>R</kbd>
+        </button>
+        <span className="nav-sep" aria-hidden="true"></span>
         <ThemeToggle theme={theme} onToggle={toggleTheme} />
       </div>
     </>
