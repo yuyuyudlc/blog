@@ -1,0 +1,78 @@
+.tatami-plan {
+  display: grid;
+  grid-template: repeat(3, 1fr) / repeat(3, 1fr);
+  grid-template-areas:
+    "one one two"
+    "four half two"
+    "four three three";
+  gap: 1px;
+  width: 100%;
+  aspect-ratio: 1;
+  border: 1px solid var(--heri);
+  background-color: var(--heri);
+}
+
+.tatami-plan-mat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  min-width: 0;
+  background-color: var(--bg-color);
+  transition: background-color var(--duration-fast) var(--easing);
+}
+
+.tatami-plan-mat-one {
+  grid-area: one;
+}
+
+.tatami-plan-mat-two {
+  grid-area: two;
+}
+
+.tatami-plan-mat-three {
+  grid-area: three;
+}
+
+.tatami-plan-mat-four {
+  grid-area: four;
+}
+
+.tatami-plan-mat-half {
+  grid-area: half;
+}
+
+.tatami-plan-numeral {
+  font-size: 0.9375rem;
+  line-height: 1;
+  color: var(--text-color);
+}
+
+.tatami-plan-label {
+  font-family: var(--font-sans);
+  font-size: 0.6875rem;
+  line-height: 1.2;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.tatami-plan-mat[data-empty] .tatami-plan-numeral,
+.tatami-plan-mat[data-empty] .tatami-plan-label {
+  color: var(--text-faint);
+}
+
+.tatami-plan-mat:hover,
+.tatami-plan-mat[data-active] {
+  background-color: var(--surface-color);
+}
+
+.tatami-plan-mat:hover .tatami-plan-numeral,
+.tatami-plan-mat[data-active] .tatami-plan-numeral {
+  color: var(--accent-color);
+}
+
+.tatami-plan-mat:focus-visible {
+  position: relative;
+  outline-offset: -2px;
+}

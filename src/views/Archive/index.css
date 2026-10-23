@@ -1,0 +1,8 @@
+.archive-view {
+  display: flex;
+  flex-direction: column;
+}
+
+.archive-view-empty {
+  color: var(--text-muted);
+}

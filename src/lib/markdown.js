@@ -77,7 +77,7 @@ export function estimateReadingTime(markdownText) {
 /**
  * Renders Markdown text into HTML, assigning deterministic IDs to headings,
  * collecting h2/h3 entries for the table of contents, and wrapping fenced
- * code blocks in a Zed-style `.code-window` figure.
+ * code blocks in a captioned `.code-block` figure.
  */
 export function renderMarkdown(markdownText) {
   const headings = [];
@@ -102,7 +102,12 @@ export function renderMarkdown(markdownText) {
           });
         }
 
-        return `<h${depth} id="${escapeHtml(id)}">${innerHtml}</h${depth}>`;
+        const safeId = escapeHtml(id);
+        const anchor = depth <= 3
+          ? `<a class="heading-anchor" href="#${safeId}" aria-hidden="true" tabindex="-1">#</a>`
+          : '';
+
+        return `<h${depth} id="${safeId}">${anchor}${innerHtml}</h${depth}>`;
       },
       code({ text, lang }) {
         const parts = String(lang ?? '').trim().split(/\s+/).filter(Boolean);
@@ -114,10 +119,9 @@ export function renderMarkdown(markdownText) {
           : escapeHtml(text);
 
         const languageClass = rawLang ? ` language-${escapeHtml(rawLang)}` : '';
-        const displayLang = escapeHtml((rawLang || 'code').toUpperCase());
-        const tabLabel = escapeHtml(filename || displayLang);
+        const caption = escapeHtml(filename || rawLang);
 
-        return `<figure class="code-window" data-language="${displayLang}"><figcaption class="code-window-bar"><span class="code-window-tab">${tabLabel}</span><div class="code-window-actions">${filename ? `<span class="code-window-lang">${displayLang}</span>` : ''}<button type="button" class="code-window-copy" data-code-copy aria-label="复制代码">复制</button></div></figcaption><pre><code class="hljs${languageClass}">${highlightedHtml}</code></pre></figure>`;
+        return `<figure class="code-block"><figcaption class="code-block-caption"><span>${caption}</span><button type="button" class="code-block-copy" data-code-copy aria-label="复制代码">复制</button></figcaption><pre><code class="hljs${languageClass}">${highlightedHtml}</code></pre></figure>`;
       },
     },
   });

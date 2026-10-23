@@ -1,8 +1,9 @@
 import "./globals.css";
 import { IBM_Plex_Mono, Noto_Sans_SC, Noto_Serif_SC } from "next/font/google";
 import Script from "next/script";
-import SiteShell from "@/components/site-shell";
+import { AppShell } from "@/components";
 import { siteConfig } from "@/config/site";
+import { getSearchIndex } from "@/lib/posts";
 
 const notoSansSC = Noto_Sans_SC({
   weight: "variable",
@@ -56,17 +57,7 @@ export default function RootLayout({ children }) {
           strategy="beforeInteractive"
           dangerouslySetInnerHTML={{ __html: themeScript }}
         />
-        <div className="layout-container">
-          <div className="margin-left"></div>
-          <div className="gutter-left"></div>
-
-          <div className="workspace-wrapper">
-            <SiteShell>{children}</SiteShell>
-          </div>
-
-          <div className="gutter-right"></div>
-          <div className="margin-right"></div>
-        </div>
+        <AppShell posts={getSearchIndex()}>{children}</AppShell>
       </body>
     </html>
   );

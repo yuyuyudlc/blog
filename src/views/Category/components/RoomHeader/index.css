@@ -1,0 +1,18 @@
+.room-header {
+  margin-bottom: 64px;
+}
+
+.room-header-back {
+  transition: color var(--duration-fast) var(--easing);
+}
+
+.room-header-back:hover {
+  color: var(--accent-color);
+}
+
+.room-header-title {
+  margin: 24px 0 4px;
+  font-size: clamp(1.5rem, 3.6vw, 1.875rem);
+  font-weight: 500;
+  line-height: 1.4;
+}

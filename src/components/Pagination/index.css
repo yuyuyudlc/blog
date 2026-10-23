@@ -1,0 +1,13 @@
+.pagination {
+  display: flex;
+  gap: 24px;
+  margin-top: 48px;
+}
+
+.pagination span[aria-hidden] {
+  color: var(--text-faint);
+}
+
+.pagination a:hover {
+  color: var(--accent-color);
+}

@@ -1,0 +1,25 @@
+.not-found-room {
+  position: relative;
+  width: min(100%, 320px);
+  aspect-ratio: 1;
+  margin-bottom: 64px;
+  overflow: hidden;
+}
+
+.not-found-title {
+  margin: 8px 0 8px;
+  font-size: clamp(1.375rem, 3.6vw, 1.625rem);
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.not-found-lead {
+  color: var(--text-muted);
+}
+
+.not-found-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 32px;
+  margin-top: 32px;
+}

@@ -1,0 +1,41 @@
+.comments {
+  min-width: 0;
+  margin-top: 96px;
+}
+
+.comments-heading {
+  margin-bottom: 24px;
+}
+
+.comments h2 {
+  margin-bottom: 4px;
+  font-size: 1.0625rem;
+  font-weight: 600;
+}
+
+.comments-heading p,
+.comments-fallback,
+.comments-status {
+  font-family: var(--font-sans);
+  font-size: var(--text-small);
+  line-height: 1.7;
+  color: var(--text-muted);
+  overflow-wrap: anywhere;
+}
+
+.comments giscus-widget,
+#comments::part(iframe) {
+  display: block;
+  width: 100%;
+  min-width: 0;
+}
+
+.comments a {
+  text-decoration: underline;
+  text-decoration-color: var(--text-faint);
+  text-underline-offset: 0.3em;
+}
+
+.comments a:hover {
+  color: var(--accent-color);
+}

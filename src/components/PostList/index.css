@@ -1,0 +1,22 @@
+.post-list + .post-list {
+  margin-top: 64px;
+}
+
+.post-list-title {
+  margin-bottom: 12px;
+  font-weight: 400;
+}
+
+.post-list-empty {
+  color: var(--text-muted);
+}
+
+.post-list-action {
+  display: inline-block;
+  margin-top: 16px;
+  transition: color var(--duration-fast) var(--easing);
+}
+
+.post-list-action:hover {
+  color: var(--accent-color);
+}

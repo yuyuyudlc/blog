@@ -1,0 +1,27 @@
+.article-header {
+  margin-bottom: 64px;
+}
+
+.article-header-title {
+  font-size: clamp(1.625rem, 4vw, 2.125rem);
+  font-weight: 500;
+  line-height: 1.45;
+  letter-spacing: 0.01em;
+}
+
+.article-header-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  margin-top: 16px;
+}
+
+.article-header-meta > * + *::before {
+  content: "·";
+  margin-right: 12px;
+  color: var(--text-faint);
+}
+
+.article-header-room:hover {
+  color: var(--accent-color);
+}

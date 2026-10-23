@@ -1,0 +1,11 @@
+.random-post-button {
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+.random-post-button:disabled {
+  color: var(--text-faint);
+  cursor: not-allowed;
+}

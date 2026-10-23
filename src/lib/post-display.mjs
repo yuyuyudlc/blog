@@ -38,15 +38,6 @@ export function formatIsoDate(value) {
   return `${year}-${month}-${day}`;
 }
 
-export function formatMonthDay(value) {
-  const date = parsePostDate(value);
-  if (!date) return '—';
-
-  const month = String(date.getUTCMonth() + 1).padStart(2, '0');
-  const day = String(date.getUTCDate()).padStart(2, '0');
-  return `${month}.${day}`;
-}
-
 export function formatReadingTime(value) {
   const text = String(value ?? '');
   const minutes = text.match(/\d+/)?.[0];

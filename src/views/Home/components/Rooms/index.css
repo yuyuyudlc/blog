@@ -1,0 +1,54 @@
+.home-rooms {
+  margin-top: 96px;
+}
+
+.home-rooms-title {
+  margin-bottom: 20px;
+  font-weight: 400;
+}
+
+.home-rooms-body {
+  display: grid;
+  grid-template-columns: 152px minmax(0, 1fr);
+  align-items: center;
+  gap: 48px;
+}
+
+.home-rooms-list {
+  list-style: none;
+}
+
+.home-rooms-link {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  padding: 3px 0;
+}
+
+.home-rooms-label {
+  flex: 1;
+  transition: color var(--duration-fast) var(--easing);
+}
+
+.home-rooms-count {
+  color: var(--text-faint);
+}
+
+.home-rooms-link:hover .home-rooms-label {
+  color: var(--accent-color);
+}
+
+@media (max-width: 640px) {
+  .home-rooms {
+    margin-top: 72px;
+  }
+
+  .home-rooms-body {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 28px;
+  }
+
+  .home-rooms-plan {
+    width: 152px;
+  }
+}

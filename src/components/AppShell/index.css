@@ -1,0 +1,20 @@
+.app {
+  display: flex;
+  flex-direction: column;
+  width: min(100%, calc(var(--measure) + var(--gutter) * 2));
+  min-height: 100vh;
+  min-height: 100dvh;
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+.app-main {
+  flex: 1 0 auto;
+  padding: 12vh 0 16vh;
+}
+
+@media (max-width: 640px) {
+  .app-main {
+    padding: 56px 0 96px;
+  }
+}

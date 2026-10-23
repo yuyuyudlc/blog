@@ -1,0 +1,286 @@
+/* ==========================================================================
+   Prose — a printed page: Song serif, ~36 characters a line, 1.9 leading
+   ========================================================================== */
+
+.article-body {
+  overflow-wrap: break-word;
+}
+
+.article-body > * + * {
+  margin-top: 1.2em;
+}
+
+.article-body h2,
+.article-body h3,
+.article-body h4 {
+  position: relative;
+  line-height: 1.5;
+}
+
+.article-body h2 {
+  margin-top: 2.8em;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.article-body h3 {
+  margin-top: 2.2em;
+  font-size: 1.0625rem;
+  font-weight: 600;
+}
+
+.article-body h4 {
+  margin-top: 1.8em;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.article-body :is(h2, h3, h4) + * {
+  margin-top: 0.7em;
+}
+
+/* "#" anchor hanging in the left margin, shown on hover */
+.heading-anchor {
+  position: absolute;
+  top: 0;
+  left: -1.4em;
+  width: 1em;
+  font-family: var(--font-sans);
+  font-weight: 400;
+  color: var(--text-faint);
+  text-align: right;
+  opacity: 0;
+  transition: opacity var(--duration-fast) var(--easing);
+}
+
+.article-body :is(h2, h3, h4):hover .heading-anchor {
+  opacity: 1;
+}
+
+.heading-anchor:hover {
+  color: var(--accent-color);
+}
+
+@media (hover: none) {
+  .heading-anchor {
+    display: none;
+  }
+}
+
+.article-body a:not(.heading-anchor) {
+  text-decoration: underline;
+  text-decoration-color: var(--text-faint);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.3em;
+  transition:
+    color var(--duration-fast) var(--easing),
+    text-decoration-color var(--duration-fast) var(--easing);
+}
+
+.article-body a:not(.heading-anchor):hover {
+  color: var(--accent-color);
+  text-decoration-color: currentColor;
+}
+
+.article-body strong {
+  font-weight: 600;
+}
+
+.article-body ul,
+.article-body ol {
+  padding-left: 1.4em;
+}
+
+.article-body li + li {
+  margin-top: 0.4em;
+}
+
+.article-body li::marker {
+  color: var(--text-faint);
+}
+
+.article-body blockquote {
+  padding-left: 1.2em;
+  border-left: 1px solid var(--heri);
+  color: var(--text-muted);
+}
+
+.article-body blockquote > * + * {
+  margin-top: 0.8em;
+}
+
+/* A section break set like a novel's: three spaced dots */
+.article-body hr {
+  height: auto;
+  margin: 3em 0;
+  border: 0;
+  text-align: center;
+}
+
+.article-body hr::before {
+  content: "·  ·  ·";
+  white-space: pre;
+  color: var(--text-faint);
+}
+
+.article-body table {
+  display: block;
+  width: max-content;
+  max-width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  font-variant-numeric: tabular-nums;
+  overflow-x: auto;
+}
+
+.article-body th,
+.article-body td {
+  padding: 6px 16px 6px 0;
+  border-bottom: 1px solid var(--border-color);
+  text-align: left;
+}
+
+.article-body th {
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.article-body img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border-radius: 2px;
+}
+
+.article-body img.is-previewable {
+  cursor: zoom-in;
+}
+
+.article-body p:has(> img:only-child) {
+  margin-top: 2em;
+}
+
+/* An italic line right after an image reads as its caption */
+.article-body p:has(> img:only-child) + p:has(> em:only-child) {
+  margin-top: 0.8em;
+  font-family: var(--font-sans);
+  font-size: var(--text-small);
+  text-align: center;
+  color: var(--text-muted);
+}
+
+.article-body p:has(> img:only-child) + p > em:only-child {
+  font-style: normal;
+}
+
+.article-body :not(pre) > code {
+  padding: 0.1em 0.3em;
+  border-radius: 3px;
+  background-color: var(--surface-color);
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+}
+
+/* ==========================================================================
+   Code — a quiet block on a slightly darker sheet, caption on top
+   ========================================================================== */
+
+.article-body .code-block {
+  margin-top: 2em;
+  margin-bottom: 2em;
+}
+
+.code-block-caption {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  min-height: 1.5em;
+  margin-bottom: 6px;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-faint);
+}
+
+.code-block-copy {
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  opacity: 0;
+  transition:
+    opacity var(--duration-fast) var(--easing),
+    color var(--duration-fast) var(--easing);
+}
+
+.code-block:hover .code-block-copy,
+.code-block-copy:focus-visible,
+.code-block-copy[data-copied] {
+  opacity: 1;
+}
+
+.code-block-copy:hover,
+.code-block-copy[data-copied] {
+  color: var(--accent-color);
+}
+
+@media (hover: none) {
+  .code-block-copy {
+    opacity: 1;
+  }
+}
+
+.article-body pre {
+  padding: 18px 20px;
+  border-radius: 4px;
+  background-color: var(--surface-color);
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.article-body pre code {
+  display: block;
+  min-width: max-content;
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  line-height: 1.75;
+  color: var(--code-text);
+  white-space: pre;
+}
+
+.article-body .hljs-comment,
+.article-body .hljs-quote {
+  color: var(--code-comment);
+  font-style: italic;
+}
+
+.article-body .hljs-keyword,
+.article-body .hljs-selector-tag,
+.article-body .hljs-built_in,
+.article-body .hljs-type,
+.article-body .hljs-literal {
+  color: var(--code-keyword);
+}
+
+.article-body .hljs-title,
+.article-body .hljs-function,
+.article-body .hljs-name,
+.article-body .hljs-attr,
+.article-body .hljs-property {
+  color: var(--code-title);
+}
+
+.article-body .hljs-string,
+.article-body .hljs-regexp,
+.article-body .hljs-addition {
+  color: var(--code-string);
+}
+
+.article-body .hljs-number,
+.article-body .hljs-symbol,
+.article-body .hljs-deletion {
+  color: var(--code-number);
+}

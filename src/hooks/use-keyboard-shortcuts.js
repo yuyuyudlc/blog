@@ -13,10 +13,13 @@ function isEditableElement(element) {
 
 /**
  * Registers global single-key shortcuts (e.g. T, R, H) while ignoring
- * modifier combinations and focused form inputs.
+ * modifier combinations and focused form inputs. Pass `enabled = false`
+ * to pause them, e.g. while a dialog is open.
  */
-export function useKeyboardShortcuts(handlers) {
+export function useKeyboardShortcuts(handlers, enabled = true) {
   useEffect(() => {
+    if (!enabled) return undefined;
+
     const handleKeyDown = (event) => {
       if (event.metaKey || event.ctrlKey || event.altKey) return;
       if (isEditableElement(document.activeElement)) return;
@@ -32,5 +35,5 @@ export function useKeyboardShortcuts(handlers) {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [handlers]);
+  }, [enabled, handlers]);
 }

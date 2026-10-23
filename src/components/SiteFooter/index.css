@@ -1,0 +1,29 @@
+.site-footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px 24px;
+  padding: 32px 0 48px;
+  border-top: 1px solid var(--border-color);
+  color: var(--text-faint);
+}
+
+.site-footer-help {
+  padding: 0;
+  border: 0;
+  background: none;
+  font-size: inherit;
+  color: inherit;
+  cursor: pointer;
+  transition: color var(--duration-fast) var(--easing);
+}
+
+.site-footer-help:hover {
+  color: var(--text-muted);
+}
+
+@media (hover: none) {
+  .site-footer-help {
+    display: none;
+  }
+}

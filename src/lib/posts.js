@@ -7,7 +7,9 @@ import {
   getReadableCharacterCount,
   renderMarkdown,
 } from '@/lib/markdown';
-import { parsePostDate } from '@/lib/post-display.mjs';
+import { formatIsoDate } from '@/lib/post-display.mjs';
+
+export { getCategoryByLabel, getCategoryBySlug } from '@/lib/categories';
 
 const postsDirectory = path.join(process.cwd(), 'posts');
 
@@ -76,36 +78,37 @@ export function getCategoryStats(posts = getAllPosts()) {
   );
 }
 
-export function getCategoryByLabel(label) {
-  return siteConfig.categories.find((category) => category.label === label) || null;
-}
-
-export function getCategoryBySlug(slug) {
-  return siteConfig.categories.find((category) => category.slug === slug) || null;
-}
-
 /**
- * Returns the adjacent `{ newer, older }` posts relative to `slug`.
+ * Returns the neighbouring posts as an endless loop, like the parallel
+ * four-and-a-half-tatami rooms: past the oldest post you arrive at the
+ * newest one again, and vice versa. Returns `null` neighbours when there
+ * is no other post to loop to.
  */
-export function getAdjacentPosts(slug, posts = getAllPosts()) {
+export function getLoopPosts(slug, posts = getAllPosts()) {
   const index = posts.findIndex((post) => post.slug === slug);
-  if (index === -1) {
-    return { newer: null, older: null };
+  if (index === -1 || posts.length < 2) {
+    return { older: null, newer: null };
   }
 
+  const olderIndex = (index + 1) % posts.length;
+  const newerIndex = (index - 1 + posts.length) % posts.length;
+
   return {
-    newer: posts[index - 1] ?? null,
-    older: posts[index + 1] ?? null,
+    older: { post: posts[olderIndex], wrapped: olderIndex < index },
+    newer: { post: posts[newerIndex], wrapped: newerIndex > index },
   };
 }
 
 /**
- * Checks whether a post was published within the last `days` days.
+ * Returns serializable post summaries for the command palette.
  */
-export function isRecentPost(dateValue, days = 7) {
-  const date = parsePostDate(dateValue);
-  if (!date) return false;
-
-  const diffMs = Date.now() - date.getTime();
-  return diffMs >= 0 && diffMs <= days * 86400000;
+export function getSearchIndex(posts = getAllPosts()) {
+  return posts.map((post) => ({
+    slug: post.slug,
+    title: String(post.title ?? post.slug),
+    category: String(post.category ?? ''),
+    date: formatIsoDate(post.date),
+    tags: Array.isArray(post.tags) ? post.tags.map(String) : [],
+    summary: String(post.summary ?? ''),
+  }));
 }

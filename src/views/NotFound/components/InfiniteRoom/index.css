@@ -1,0 +1,47 @@
+.infinite-room {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.infinite-room-ring {
+  position: absolute;
+  aspect-ratio: 1;
+  border: 1px solid var(--heri);
+}
+
+.infinite-room-seam {
+  position: absolute;
+  background-color: var(--heri);
+}
+
+.infinite-room-seam-top {
+  top: 33.3333%;
+  left: 0;
+  width: 66.6667%;
+  height: 1px;
+}
+
+.infinite-room-seam-right {
+  top: 0;
+  left: 66.6667%;
+  width: 1px;
+  height: 66.6667%;
+}
+
+.infinite-room-seam-bottom {
+  top: 66.6667%;
+  left: 33.3333%;
+  width: 66.6667%;
+  height: 1px;
+}
+
+.infinite-room-seam-left {
+  top: 33.3333%;
+  left: 33.3333%;
+  width: 1px;
+  height: 66.6667%;
+}

@@ -1,0 +1,42 @@
+.post-row {
+  list-style: none;
+}
+
+.post-row-link {
+  display: flex;
+  align-items: baseline;
+  gap: 24px;
+  padding: 6px 0;
+}
+
+.post-row-title {
+  flex: 1;
+  min-width: 0;
+  transition: color var(--duration-fast) var(--easing);
+}
+
+.post-row-date {
+  flex: none;
+  color: var(--text-faint);
+}
+
+.post-row-link:hover .post-row-title,
+.post-row-link:focus-visible .post-row-title {
+  color: var(--accent-color);
+}
+
+.post-row-link:focus-visible {
+  outline: 0;
+}
+
+.post-row-link:focus-visible .post-row-date {
+  color: var(--accent-color);
+}
+
+@media (max-width: 640px) {
+  .post-row-link {
+    flex-direction: column;
+    gap: 0;
+    padding: 8px 0;
+  }
+}

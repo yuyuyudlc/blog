@@ -1,0 +1,20 @@
+.home-intro {
+  margin-bottom: 96px;
+}
+
+.home-intro-lead {
+  margin-bottom: 12px;
+}
+
+.home-intro-title {
+  font-size: clamp(1.5rem, 3.6vw, 1.875rem);
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: 0.02em;
+}
+
+@media (max-width: 640px) {
+  .home-intro {
+    margin-bottom: 64px;
+  }
+}

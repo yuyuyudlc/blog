@@ -1,0 +1,10 @@
+.archive-header {
+  margin-bottom: 64px;
+}
+
+.archive-header-title {
+  margin-bottom: 4px;
+  font-size: clamp(1.5rem, 3.6vw, 1.875rem);
+  font-weight: 500;
+  line-height: 1.4;
+}

@@ -1,0 +1,96 @@
+.image-preview-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100dvh;
+  z-index: 180;
+  background-color: var(--image-preview-backdrop);
+  backdrop-filter: blur(8px);
+}
+
+.image-preview-content {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100dvh;
+  z-index: 181;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 12px;
+  padding: 32px;
+  outline: none;
+}
+
+.image-preview-title {
+  justify-self: center;
+  max-width: min(780px, calc(100vw - 120px));
+  padding: 6px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 4px;
+  background-color: rgba(20, 24, 32, 0.8);
+  color: #dce0e5;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.image-preview-frame {
+  position: relative;
+  align-self: center;
+  justify-self: center;
+  width: min(100%, 1280px);
+  height: calc(100vh - 116px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 4px;
+  background-color: var(--bg-color);
+  overflow: hidden;
+}
+
+.image-preview-media {
+  cursor: zoom-out;
+  object-fit: contain;
+}
+
+.image-preview-close {
+  position: fixed;
+  top: 22px;
+  right: 22px;
+  z-index: 182;
+  width: 34px;
+  height: 34px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 4px;
+  background-color: rgba(20, 24, 32, 0.82);
+  color: #dce0e5;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    background-color var(--duration-fast) var(--easing),
+    border-color var(--duration-fast) var(--easing);
+}
+
+.image-preview-close:hover {
+  background-color: rgba(35, 41, 54, 0.94);
+  border-color: rgba(255, 255, 255, 0.28);
+}
+
+@media (max-width: 767px) {
+  .image-preview-content {
+    padding: 18px;
+  }
+
+  .image-preview-title {
+    max-width: calc(100vw - 88px);
+  }
+
+  .image-preview-frame {
+    height: calc(100vh - 96px);
+  }
+}

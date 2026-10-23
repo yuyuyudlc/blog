@@ -1,0 +1,7 @@
+.post-view-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  margin-top: 64px;
+  color: var(--text-faint);
+}
