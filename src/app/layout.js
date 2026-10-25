@@ -3,7 +3,6 @@ import { IBM_Plex_Mono, Noto_Sans_SC, Noto_Serif_SC } from "next/font/google";
 import Script from "next/script";
 import { AppShell } from "@/components";
 import { siteConfig } from "@/config/site";
-import { getSearchIndex } from "@/lib/posts";
 
 const notoSansSC = Noto_Sans_SC({
   weight: "variable",
@@ -57,7 +56,7 @@ export default function RootLayout({ children }) {
           strategy="beforeInteractive"
           dangerouslySetInnerHTML={{ __html: themeScript }}
         />
-        <AppShell posts={getSearchIndex()}>{children}</AppShell>
+        <AppShell>{children}</AppShell>
       </body>
     </html>
   );

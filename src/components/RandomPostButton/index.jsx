@@ -12,7 +12,6 @@ export default function RandomPostButton({ slugs = [], label = '随机一篇' })
       onClick={goRandom}
       className="random-post-button text-link"
       disabled={slugs.length === 0}
-      title="快捷键 R"
     >
       {label}
     </button>

@@ -11,7 +11,7 @@ function LoopLink({ direction, target }) {
 
   return (
     <li>
-      <Link href={`/posts/${target.post.slug}`} className="loop-nav-link" data-loop={direction}>
+      <Link href={`/posts/${target.post.slug}`} className="loop-nav-link">
         <span className="loop-nav-label meta">
           {target.wrapped ? label.wrapped : label.step}
         </span>

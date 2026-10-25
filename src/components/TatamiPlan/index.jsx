@@ -25,9 +25,7 @@ export default function TatamiPlan({ stats = {}, activeSlug = '' }) {
             aria-label={`${category.label}，${count} 篇`}
           >
             <span className="tatami-plan-numeral">{category.numeral}</span>
-            {category.orient !== 'square' && (
-              <span className="tatami-plan-label">{category.label}</span>
-            )}
+            <span className="tatami-plan-label">{category.label}</span>
           </Link>
         );
       })}

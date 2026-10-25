@@ -3,7 +3,6 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { siteConfig } from '@/config/site';
-import { useCommands } from '../CommandProvider';
 import TatamiMark from '../TatamiMark';
 import ThemeToggle from '../ThemeToggle';
 import './index.css';
@@ -17,7 +16,6 @@ function isNavItemActive(pathname, href) {
 
 export default function SiteHeader() {
   const pathname = usePathname();
-  const { openPalette } = useCommands();
 
   return (
     <header className="site-header">
@@ -37,14 +35,6 @@ export default function SiteHeader() {
             {item.label}
           </Link>
         ))}
-        <button
-          type="button"
-          className="site-header-link"
-          onClick={openPalette}
-          title="搜索（⌘K 或 /）"
-        >
-          搜索
-        </button>
         <ThemeToggle />
       </nav>
     </header>

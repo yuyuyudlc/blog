@@ -7,7 +7,6 @@ import {
   getReadableCharacterCount,
   renderMarkdown,
 } from '@/lib/markdown';
-import { formatIsoDate } from '@/lib/post-display.mjs';
 
 export { getCategoryByLabel, getCategoryBySlug } from '@/lib/categories';
 
@@ -97,18 +96,4 @@ export function getLoopPosts(slug, posts = getAllPosts()) {
     older: { post: posts[olderIndex], wrapped: olderIndex < index },
     newer: { post: posts[newerIndex], wrapped: newerIndex > index },
   };
-}
-
-/**
- * Returns serializable post summaries for the command palette.
- */
-export function getSearchIndex(posts = getAllPosts()) {
-  return posts.map((post) => ({
-    slug: post.slug,
-    title: String(post.title ?? post.slug),
-    category: String(post.category ?? ''),
-    date: formatIsoDate(post.date),
-    tags: Array.isArray(post.tags) ? post.tags.map(String) : [],
-    summary: String(post.summary ?? ''),
-  }));
 }

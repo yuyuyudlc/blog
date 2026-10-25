@@ -21,8 +21,8 @@ export const siteConfig = {
     { label: "AI", slug: "ai", numeral: "参", mat: "three", orient: "h" },
     { label: "随记", slug: "notes", numeral: "肆", mat: "four", orient: "v" },
     {
-      label: "个人兴趣",
-      slug: "interests",
+      label: "photos",
+      slug: "photos",
       numeral: "半",
       mat: "half",
       orient: "square",
