@@ -8,6 +8,8 @@ import {
   renderMarkdown,
 } from '@/lib/markdown';
 
+import { getCategoryByLabel, isPhotoCategory } from '@/lib/categories';
+
 export { getCategoryByLabel, getCategoryBySlug } from '@/lib/categories';
 
 const postsDirectory = path.join(process.cwd(), 'posts');
@@ -63,6 +65,22 @@ export async function getPostBySlug(slug) {
     charCount,
     readingTime: estimateReadingTime(content),
   };
+}
+
+export function isPhotoPost(post) {
+  return isPhotoCategory(getCategoryByLabel(post.category));
+}
+
+/**
+ * Written posts only — photos live in their own room and are kept out of
+ * the article lists, the archive and the article loop.
+ */
+export function getArticles(posts = getAllPosts()) {
+  return posts.filter((post) => !isPhotoPost(post));
+}
+
+export function getPhotos(posts = getAllPosts()) {
+  return posts.filter(isPhotoPost);
 }
 
 /**

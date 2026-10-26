@@ -26,6 +26,9 @@ export const siteConfig = {
       numeral: "半",
       mat: "half",
       orient: "square",
+      // Posts in this category are photos: shown as a square grid on the
+      // category page and with the photo layout on their own page.
+      layout: "photos",
     },
   ],
 };

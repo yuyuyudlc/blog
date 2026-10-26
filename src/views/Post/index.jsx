@@ -1,7 +1,15 @@
 import { notFound } from 'next/navigation';
 import { siteConfig } from '@/config/site';
 import { getGiscusConfig } from '@/lib/giscus-config.mjs';
-import { getAllPosts, getCategoryByLabel, getLoopPosts, getPostBySlug } from '@/lib/posts';
+import { isPhotoCategory } from '@/lib/categories';
+import {
+  getAllPosts,
+  getArticles,
+  getCategoryByLabel,
+  getLoopPosts,
+  getPostBySlug,
+} from '@/lib/posts';
+import Photo from '@/views/Photo';
 import {
   ArticleBody,
   ArticleHeader,
@@ -43,12 +51,18 @@ export default async function Post({ params }) {
     notFound();
   }
 
-  const { older, newer } = getLoopPosts(slug);
+  const category = getCategoryByLabel(post.category);
+
+  if (isPhotoCategory(category)) {
+    return <Photo post={post} category={category} />;
+  }
+
+  const { older, newer } = getLoopPosts(slug, getArticles());
   const tags = Array.isArray(post.tags) ? post.tags : [];
 
   return (
     <article className="post-view">
-      <ArticleHeader post={post} category={getCategoryByLabel(post.category)} />
+      <ArticleHeader post={post} category={category} />
       <Toc headings={post.headings || []} />
       <ArticleBody html={post.contentHtml} />
 

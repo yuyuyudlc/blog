@@ -1,5 +1,5 @@
 .home-rooms {
-  margin-top: 96px;
+  margin-bottom: 96px;
 }
 
 .home-rooms-title {
@@ -40,15 +40,20 @@
 
 @media (max-width: 640px) {
   .home-rooms {
-    margin-top: 72px;
+    margin-bottom: 64px;
   }
 
   .home-rooms-body {
     grid-template-columns: minmax(0, 1fr);
-    gap: 28px;
   }
 
+  /* On phones the plan alone is enough: every mat is labelled, and it is
+     drawn larger so each mat is an easy tap target. */
   .home-rooms-plan {
-    width: 152px;
+    width: min(100%, 220px);
+  }
+
+  .home-rooms-list {
+    display: none;
   }
 }

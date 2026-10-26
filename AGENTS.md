@@ -29,3 +29,26 @@ coverAlt: 文章封面的文字说明
 - 标题、列表、链接、引用、图片和代码块使用标准 GitHub-Flavored Markdown 语法。
 - 禁止在文章 Markdown 中直接写入原始 `<script>` 元素。需要展示包含脚本标签的 HTML 或 JavaScript 时，必须放进围栏代码块，避免 React 将其当作可执行页面标签。
 - 新增文章后，必须检查首页、对应分类页以及 `/posts/<不含扩展名的文件名>` 是否能够正确渲染。
+
+## 照片录入规范
+
+照片与文章共用 `posts/` 目录，一张照片对应一个 Markdown 文件：
+
+```markdown
+---
+title: 鸭川的傍晚
+category: photos
+date: 2026-10-20
+tags: [Photo]
+summary: 一句话说明，用于页面元数据描述。
+coverImage: /photos/kamogawa-evening.jpg
+coverAlt: 傍晚的鸭川河岸
+---
+
+（可选）一两句关于这张照片的文字。
+```
+
+- `category` 必须填写 `photos`；`coverImage` 是照片本身，必须填写，`coverAlt` 用于无障碍描述。
+- 照片文件放在 `public/photos/`，引用时不写 `public` 前缀。上传前将长边缩小到约 2000px，避免仓库体积膨胀。
+- 照片只出现在分类页 `/category/photos` 的正方形网格中，不会出现在首页“最近文章”、归档和文章的上一篇 / 下一篇中。
+- 新增照片后，必须检查 `/category/photos` 与 `/posts/<不含扩展名的文件名>` 是否能够正确渲染。

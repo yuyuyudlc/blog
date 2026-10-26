@@ -1,7 +1,7 @@
 import { PostList } from '@/components';
 import { siteConfig } from '@/config/site';
 import { parsePostDate } from '@/lib/post-display.mjs';
-import { getAllPosts } from '@/lib/posts';
+import { getArticles } from '@/lib/posts';
 import { ArchiveHeader } from './components';
 import './index.css';
 
@@ -26,7 +26,7 @@ function groupPostsByYear(posts) {
 }
 
 export default function Archive() {
-  const posts = getAllPosts();
+  const posts = getArticles();
   const yearGroups = groupPostsByYear(posts);
 
   return (

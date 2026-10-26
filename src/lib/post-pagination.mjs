@@ -6,16 +6,16 @@ export function normalizePostPage(value, totalPages) {
   return Math.min(Math.max(parsedPage, 1), totalPages);
 }
 
-export function paginatePosts(posts, value) {
+export function paginatePosts(posts, value, perPage = POSTS_PER_PAGE) {
   const totalPosts = posts.length;
-  const totalPages = Math.max(1, Math.ceil(totalPosts / POSTS_PER_PAGE));
+  const totalPages = Math.max(1, Math.ceil(totalPosts / perPage));
   const currentPage = normalizePostPage(value, totalPages);
-  const start = (currentPage - 1) * POSTS_PER_PAGE;
+  const start = (currentPage - 1) * perPage;
 
   return {
     currentPage,
     totalPages,
     totalPosts,
-    posts: posts.slice(start, start + POSTS_PER_PAGE),
+    posts: posts.slice(start, start + perPage),
   };
 }

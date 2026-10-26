@@ -1,0 +1,67 @@
+.photo-view-back {
+  transition: color var(--duration-fast) var(--easing);
+}
+
+.photo-view-back:hover {
+  color: var(--accent-color);
+}
+
+/* Centres the figure across the wide measure, even when it is wider than
+   the text column it sits in. */
+.photo-view-stage {
+  display: flex;
+  justify-content: center;
+  margin-top: 32px;
+}
+
+/* A table shrinks to the photo's width, so the caption below lines up
+   with the photo's left edge whatever its aspect ratio. */
+.photo-view-figure {
+  display: table;
+}
+
+.photo-view-original {
+  display: block;
+  cursor: zoom-in;
+}
+
+/* Natural aspect ratio, never cropped, never taller than the screen */
+.photo-view-image {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: min(var(--wide), calc(100vw - var(--gutter) * 2));
+  max-height: 82vh;
+}
+
+.photo-view-missing {
+  padding: 96px 0;
+}
+
+.photo-view-caption {
+  display: table-caption;
+  caption-side: bottom;
+  padding-top: 20px;
+}
+
+.photo-view-title {
+  font-size: 1.0625rem;
+  font-weight: 500;
+  line-height: 1.6;
+}
+
+.photo-view-note {
+  max-width: var(--measure);
+  margin-top: 24px;
+  color: var(--text-muted);
+}
+
+.photo-view-note > * + * {
+  margin-top: 1em;
+}
+
+.photo-view-note a {
+  text-decoration: underline;
+  text-decoration-color: var(--text-faint);
+  text-underline-offset: 0.3em;
+}

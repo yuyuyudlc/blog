@@ -1,0 +1,37 @@
+.photo-nav {
+  margin-top: 64px;
+  padding-top: 32px;
+  border-top: 1px solid var(--border-color);
+}
+
+.photo-nav ul {
+  display: grid;
+  gap: 16px;
+  list-style: none;
+}
+
+.photo-nav-link {
+  display: grid;
+  grid-template-columns: 6.5em minmax(0, 1fr);
+  align-items: baseline;
+  gap: 16px;
+}
+
+.photo-nav-label {
+  color: var(--text-faint);
+}
+
+.photo-nav-title {
+  transition: color var(--duration-fast) var(--easing);
+}
+
+.photo-nav-link:hover .photo-nav-title {
+  color: var(--accent-color);
+}
+
+@media (max-width: 640px) {
+  .photo-nav-link {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+  }
+}

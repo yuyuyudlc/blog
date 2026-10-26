@@ -1,0 +1,79 @@
+.photo-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+  list-style: none;
+}
+
+.photo-grid-item {
+  position: relative;
+  display: block;
+  aspect-ratio: 1;
+  overflow: hidden;
+  background-color: var(--surface-color);
+}
+
+.photo-grid-image {
+  object-fit: cover;
+  transition: opacity var(--duration-fast) var(--easing);
+}
+
+.photo-grid-item:hover .photo-grid-image {
+  opacity: 0.88;
+}
+
+.photo-grid-item:focus-visible {
+  outline-offset: 2px;
+}
+
+/* A photo post without an image yet: show its title on paper */
+.photo-grid-missing {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 12px;
+  font-size: var(--text-small);
+  text-align: center;
+  color: var(--text-muted);
+}
+
+.photo-grid-date {
+  position: absolute;
+  bottom: 8px;
+  left: 10px;
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+  color: #fff;
+  text-shadow: 0 1px 3px rgb(0 0 0 / 0.45);
+  opacity: 0;
+  transition: opacity var(--duration-fast) var(--easing);
+}
+
+.photo-grid-item:hover .photo-grid-date,
+.photo-grid-item:focus-visible .photo-grid-date {
+  opacity: 1;
+}
+
+.photo-grid-missing ~ .photo-grid-date {
+  color: var(--text-faint);
+  text-shadow: none;
+}
+
+.photo-grid-empty {
+  color: var(--text-muted);
+}
+
+@media (max-width: 900px) {
+  .photo-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .photo-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 4px;
+  }
+}

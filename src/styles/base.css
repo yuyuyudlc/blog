@@ -96,6 +96,12 @@ button {
   text-decoration-color: currentColor;
 }
 
+/* Lets a block (photos) break out of the narrow text column to a wider,
+   still centred measure. Negative margins keep it in normal flow. */
+.wide {
+  margin-inline: calc((100% - min(var(--wide), 100vw - var(--gutter) * 2)) / 2);
+}
+
 kbd {
   display: inline-block;
   min-width: 1.5em;

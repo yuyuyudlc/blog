@@ -18,6 +18,7 @@
 
   /* One narrow column, generous air */
   --measure: 36rem;
+  --wide: 1080px;
   --gutter: 24px;
 
   --duration-fast: 160ms;

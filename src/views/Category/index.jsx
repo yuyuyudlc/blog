@@ -1,10 +1,14 @@
 import { notFound } from 'next/navigation';
 import { Pagination, PostList } from '@/components';
 import { siteConfig } from '@/config/site';
+import { isPhotoCategory } from '@/lib/categories';
 import { paginatePosts } from '@/lib/post-pagination.mjs';
 import { getAllPosts, getCategoryBySlug } from '@/lib/posts';
-import { RoomHeader } from './components';
+import { PhotoGrid, RoomHeader } from './components';
 import './index.css';
+
+// 6 rows of the 4-column grid
+const PHOTOS_PER_PAGE = 24;
 
 export function generateStaticParams() {
   return siteConfig.categories.map((category) => ({
@@ -37,14 +41,15 @@ export default async function Category({ params, searchParams }) {
     notFound();
   }
 
+  const isPhotos = isPhotoCategory(category);
   const posts = getAllPosts().filter((post) => post.category === category.label);
   const pageValue = Array.isArray(query?.page) ? query.page[0] : query?.page;
-  const page = paginatePosts(posts, pageValue);
+  const page = paginatePosts(posts, pageValue, isPhotos ? PHOTOS_PER_PAGE : undefined);
 
   return (
     <div className="category-view">
       <RoomHeader category={category} count={posts.length} />
-      <PostList posts={page.posts} />
+      {isPhotos ? <PhotoGrid photos={page.posts} /> : <PostList posts={page.posts} />}
       <Pagination
         currentPage={page.currentPage}
         totalPages={page.totalPages}

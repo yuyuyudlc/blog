@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { siteConfig } from '@/config/site';
+import { getCategoryUnit } from '@/lib/categories';
 import './index.css';
 
 /**
@@ -22,7 +23,7 @@ export default function TatamiPlan({ stats = {}, activeSlug = '' }) {
             data-active={isActive || undefined}
             data-empty={count === 0 || undefined}
             aria-current={isActive ? 'page' : undefined}
-            aria-label={`${category.label}，${count} 篇`}
+            aria-label={`${category.label}，${count} ${getCategoryUnit(category)}`}
           >
             <span className="tatami-plan-numeral">{category.numeral}</span>
             <span className="tatami-plan-label">{category.label}</span>

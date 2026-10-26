@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { TatamiPlan } from '@/components';
 import { siteConfig } from '@/config/site';
+import { getCategoryUnit } from '@/lib/categories';
 import './index.css';
 
 /**
@@ -20,7 +21,7 @@ export default function Rooms({ stats }) {
             <li key={category.slug}>
               <Link href={`/category/${category.slug}`} className="home-rooms-link">
                 <span className="home-rooms-label">{category.label}</span>
-                <span className="home-rooms-count meta">{stats[category.slug] ?? 0} 篇</span>
+                <span className="home-rooms-count meta">{stats[category.slug] ?? 0} {getCategoryUnit(category)}</span>
               </Link>
             </li>
           ))}
