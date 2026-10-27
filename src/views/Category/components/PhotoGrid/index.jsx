@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import { isPicuiImage } from '@/config/images.mjs';
 import { formatIsoDate } from '@/lib/post-display.mjs';
 import './index.css';
 
@@ -26,6 +27,7 @@ export default function PhotoGrid({ photos = [] }) {
                   src={photo.coverImage}
                   alt={photo.coverAlt || photo.title}
                   fill
+                  unoptimized={isPicuiImage(photo.coverImage)}
                   loading={index < 4 ? 'eager' : 'lazy'}
                   sizes="(max-width: 640px) 50vw, (max-width: 900px) 33vw, 270px"
                 />

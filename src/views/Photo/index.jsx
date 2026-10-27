@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import { isPicuiImage } from '@/config/images.mjs';
 import { formatIsoDate, formatPostDate } from '@/lib/post-display.mjs';
 import { getLoopPosts, getPhotos } from '@/lib/posts';
 import { PhotoNav } from './components';
@@ -27,9 +28,10 @@ export default function Photo({ post, category }) {
                 className="photo-view-image"
                 src={post.coverImage}
                 alt={alt}
-                width={0}
-                height={0}
+                width={post.coverWidth || 0}
+                height={post.coverHeight || 0}
                 sizes="(max-width: 1128px) 100vw, 1080px"
+                unoptimized={isPicuiImage(post.coverImage)}
                 preload
               />
             </a>
@@ -42,6 +44,7 @@ export default function Photo({ post, category }) {
             <h1 className="photo-view-title">{post.title}</h1>
             <p className="meta">
               <time dateTime={formatIsoDate(post.date)}>{formatPostDate(post.date)}</time>
+              {post.location && <span> · {post.location}</span>}
             </p>
             {post.contentHtml?.trim() && (
               <div className="photo-view-note" dangerouslySetInnerHTML={{ __html: post.contentHtml }} />

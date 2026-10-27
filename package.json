@@ -4,9 +4,17 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "prebuild": "node scripts/check-photos.mjs",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "image:upload": "node scripts/picui-upload.mjs",
+    "photos:publish": "node scripts/publish-photos.mjs",
+    "photos:prepare": "node scripts/prepare-photo.mjs",
+    "photos:check": "node scripts/check-photos.mjs",
+    "photos:hooks": "node scripts/install-git-hooks.mjs",
+    "prepare": "node scripts/install-git-hooks.mjs",
+    "test:photos": "node --test scripts/publish-photos.test.mjs scripts/prepare-photo.test.mjs"
   },
   "dependencies": {
     "@giscus/react": "^3.1.0",
@@ -22,6 +30,8 @@
     "@tailwindcss/postcss": "^4",
     "eslint": "^9",
     "eslint-config-next": "16.2.9",
+    "exiftool-vendored": "^39.0.1",
+    "sharp": "^0.35.5",
     "tailwindcss": "^4"
   }
 }

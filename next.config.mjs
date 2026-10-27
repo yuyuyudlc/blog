@@ -1,6 +1,11 @@
+import { picuiImagePattern } from './src/config/images.mjs';
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   allowedDevOrigins: ['localhost', '127.0.0.1'],
+  images: {
+    remotePatterns: [picuiImagePattern],
+  },
   async headers() {
     return [
       {
