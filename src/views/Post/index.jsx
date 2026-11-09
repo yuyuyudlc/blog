@@ -8,6 +8,7 @@ import {
   getCategoryByLabel,
   getLoopPosts,
   getPostBySlug,
+  isPhotoPost,
 } from '@/lib/posts';
 import Photo from '@/views/Photo';
 import {
@@ -37,9 +38,13 @@ export async function generateMetadata({ params }) {
     };
   }
 
+  const description = isPhotoPost(post)
+    ? post.summary ?? [post.title, post.location].filter(Boolean).join(' · ')
+    : post.summary;
+
   return {
     title: `${post.title} | ${siteConfig.name}`,
-    description: post.summary,
+    description,
   };
 }
 

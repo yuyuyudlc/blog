@@ -14,10 +14,11 @@ npm run photos:publish
 - 日期：EXIF 拍摄日期，保留拍摄时的日历日期，不使用上传日期或文件修改日期代替。
 - 地点：优先使用图片中已有的地点文字，否则使用 EXIF GPS 和本地离线城市数据库推断。没有地点时省略；城市级结果不代表具体景点。
 - `coverImage`：PICUI 返回的 HTTPS 原图链接。
-- `coverAlt`：图片标题，可在生成后编辑。
 - `coverWidth`、`coverHeight`：图片尺寸，考虑 EXIF 旋转方向。
 - `photoHash`：原文件的 SHA-256，用来判断是否已发布。
 - `photoMd5`：用于核对 PICUI 账户中的已有图片。
+
+页面摘要默认使用标题和地点，图片替代文本默认使用标题。需要自定义时，可以在 Markdown 中填写 `summary` 或 `coverAlt`。
 
 缺少日期时会停止发布并保留输入图片，补充或修正日期后再运行：
 

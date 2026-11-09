@@ -175,8 +175,7 @@ export async function publishPhotos({
       const data = {
         title, category: 'photos', date: metadata.date,
         ...(metadata.location ? { location: metadata.location } : {}),
-        tags: ['Photo'], summary: [title, metadata.location].filter(Boolean).join(' · '),
-        coverImage: uploaded.url, coverAlt: title,
+        tags: ['Photo'], coverImage: uploaded.url,
         ...(coverWidth ? { coverWidth, coverHeight } : {}),
         photoHash: hash, photoMd5: checksum,
       };

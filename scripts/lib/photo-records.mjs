@@ -2,8 +2,11 @@ import { validDate } from './photo-metadata.mjs';
 
 export function photoRecordErrors(data) {
   const errors = [];
-  for (const field of ['title', 'summary', 'coverImage']) {
+  for (const field of ['title', 'coverImage']) {
     if (typeof data[field] !== 'string' || !data[field].trim()) errors.push(`缺少 ${field}`);
+  }
+  if (data.summary !== undefined && (typeof data.summary !== 'string' || !data.summary.trim())) {
+    errors.push('summary 必须为非空文本');
   }
   const date = data.date instanceof Date ? data.date.toISOString().slice(0, 10) : data.date;
   if (!validDate(date)) errors.push('date 必须为 YYYY-MM-DD');

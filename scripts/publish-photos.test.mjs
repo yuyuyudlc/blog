@@ -61,6 +61,8 @@ test('publish generates complete MD using filename and EXIF, then deletes the ve
   const [record] = await records(root);
   assert.equal(record.data.title, '鸭川傍晚');
   assert.equal(record.data.location, '京都');
+  assert.equal(record.data.summary, undefined);
+  assert.equal(record.data.coverAlt, undefined);
   assert.equal(record.data.date, '2026-10-20');
   assert.equal(record.data.photoHash, hashPhoto(Buffer.from('image-a')));
   assert.equal(record.data.coverImage, `${base}test-1.png`);

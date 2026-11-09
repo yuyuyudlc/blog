@@ -40,17 +40,16 @@ title: 鸭川的傍晚
 category: photos
 date: 2026-10-20
 tags: [Photo]
-summary: 一句话说明，用于页面元数据描述。
 location: 京都 · 鸭川
 coverImage: https://cdn.imgos.cn/vip/19936/example.jpg
-coverAlt: 傍晚的鸭川河岸
 photoHash: 自动生成的64位SHA-256内容哈希
 ---
 
 （可选）一两句关于这张照片的文字。
 ```
 
-- `category` 必须填写 `photos`；`coverImage` 是照片本身，必须填写，`coverAlt` 用于无障碍描述。
+- `category` 必须填写 `photos`，`coverImage` 必须填写照片本身的链接。
+- `summary` 和 `coverAlt` 均可选。页面摘要默认使用标题和地点，图片替代文本默认使用标题。需要自定义时才填写对应字段。
 - 照片发布入口是根目录 `photo/` 中的图片。提交 Git 前运行 `npm run photos:publish`，程序会从文件名生成标题、从 EXIF 提取拍摄日期、从现有地点信息或离线 GPS 城市数据库获取地点，并自动在 `posts/` 中生成 MD。
 - `photoHash` 是原始文件内容的 SHA-256。相同内容即使改名也复用原有 MD 和图床链接，不重复上传或创建记录；已有 MD 的手动修改会保留。文件名相同但内容不同会生成不同记录。
 - 上传后必须下载外链原图并核对 SHA-256，且将包含链接和元数据的 MD 完整保存后，才会删除本地输入图片；任何步骤失败都保留原图。不要手工填写虚假的哈希。

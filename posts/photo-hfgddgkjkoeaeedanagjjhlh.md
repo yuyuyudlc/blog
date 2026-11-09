@@ -3,9 +3,7 @@ title: 南京长江大桥
 category: photos
 date: '2024-06-01'
 tags: [Photo]
-summary: 南京长江大桥
 coverImage: 'https://cdn.imgos.cn/vip/19936/2026/10/27/6ae051655d384.png'
-coverAlt: 南京长江大桥
 coverWidth: 9504
 coverHeight: 6336
 photoHash: 756336a9ae404430d06997b74b32d81b64b1d7fa3c1ab6002f450718fdc08e77
