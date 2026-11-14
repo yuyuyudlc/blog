@@ -17,6 +17,9 @@ if data.get('verifyUrl'):
  if url.scheme!='https' or url.hostname!='cdn.imgos.cn' or not url.path.startswith('/vip/19936/') or url.username or url.password or url.query:
   raise ValueError('Unsupported image URL')
  with urllib.request.urlopen(urllib.request.Request(data['verifyUrl'],headers={'Accept':'image/*','User-Agent':'Mozilla/5.0'}),timeout=120) as response:
+  if data.get('download'):
+   print(json.dumps({'image':base64.b64encode(response.read()).decode('ascii')}))
+   sys.exit(0)
   digest=hashlib.sha256();size=0
   while True:
    chunk=response.read(131072)

@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { isPicuiImage } from '@/config/images.mjs';
+import { photoVariantPath, photoVariantSizes } from '@/config/photo-variants.mjs';
 import { formatIsoDate, formatPostDate } from '@/lib/post-display.mjs';
 import { getLoopPosts, getPhotos } from '@/lib/posts';
 import { PhotoNav } from './components';
@@ -26,12 +26,11 @@ export default function Photo({ post, category }) {
             <a href={post.coverImage} className="photo-view-original" title="查看原图">
               <Image
                 className="photo-view-image"
-                src={post.coverImage}
+                src={photoVariantPath(post.photoHash, photoVariantSizes.display)}
                 alt={alt}
                 width={post.coverWidth || 0}
                 height={post.coverHeight || 0}
-                sizes="(max-width: 1128px) 100vw, 1080px"
-                unoptimized={isPicuiImage(post.coverImage)}
+                unoptimized
                 preload
               />
             </a>

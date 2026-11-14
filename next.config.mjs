@@ -1,4 +1,5 @@
 import { picuiImagePattern } from './src/config/images.mjs';
+import { photoVariantDirectory } from './src/config/photo-variants.mjs';
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -8,6 +9,10 @@ const nextConfig = {
   },
   async headers() {
     return [
+      {
+        source: `${photoVariantDirectory}/:file`,
+        headers: [{ key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }],
+      },
       {
         source: '/giscus-:theme.css',
         headers: [

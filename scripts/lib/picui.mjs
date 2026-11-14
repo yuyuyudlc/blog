@@ -63,6 +63,11 @@ export async function verifyImageViaSsh(url) {
   return result.hash;
 }
 
+export async function downloadImageViaSsh(url) {
+  const { image } = await sshRequest({ verifyUrl: url, download: true });
+  return Buffer.from(image, 'base64');
+}
+
 export function createPicuiClient({ token = process.env.PICUI_TOKEN?.trim(), fetchImpl = fetch } = {}) {
   async function request(endpoint, upload) {
     if (!token) throw new Error('请先在 .env.local 中设置 PICUI_TOKEN。');

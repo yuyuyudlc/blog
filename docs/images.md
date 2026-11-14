@@ -47,6 +47,8 @@ npm run photos:publish -- --date=2026-10-26 "--location=京都 · 鸭川"
 
 ## Git 与构建检查
 
+相册用最长边 640 像素的 WebP，详情页用 1920 像素的 WebP，点击详情页图片可打开 PICUI 原图。开发启动和生产构建会为缺失的展示图下载并校验原图，再写入 Git 忽略的 `public/photo-variants/`。配置了 PICUI SSH 的开发环境通过 SSH 下载，部署服务器直接读取公开图片链接。展示图由博客直接提供，文件名包含原图哈希和编码版本，浏览器可缓存一年。已有展示图会直接复用，也可以运行 `npm run photos:variants` 单独生成。
+
 只提交 `posts/` 中生成的照片 MD 和代码。原图成功发布后会被删除，不依靠 Git 忽略来隐藏。`.photo-publish/` 中只有恢复记录，不保存图片，也不提交到 Git。
 
 `npm install` 会在本仓库没有其他 hooks 配置时启用提交检查；也可以执行 `npm run photos:hooks`。检查会阻止暂存的 `photo/`、`public/photos/` 图片，以及缺少 HTTPS 图片链接、有效日期或 SHA-256 的照片 MD。它只检查，不替你上传或修改暂存区。发布后需要正常执行 `git add` 更新暂存区。

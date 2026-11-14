@@ -18,6 +18,7 @@
 /out/
 # Upload recovery journal only; photos are deleted after publishing, not hidden from Git.
 /.photo-publish/
+/public/photo-variants/
 
 # production
 /build

@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { isPicuiImage } from '@/config/images.mjs';
+import { photoVariantPath, photoVariantSizes } from '@/config/photo-variants.mjs';
 import { formatIsoDate } from '@/lib/post-display.mjs';
 import './index.css';
 
@@ -24,12 +24,11 @@ export default function PhotoGrid({ photos = [] }) {
               {photo.coverImage ? (
                 <Image
                   className="photo-grid-image"
-                  src={photo.coverImage}
+                  src={photoVariantPath(photo.photoHash, photoVariantSizes.thumbnail)}
                   alt={photo.coverAlt || photo.title}
                   fill
-                  unoptimized={isPicuiImage(photo.coverImage)}
+                  unoptimized
                   loading={index < 4 ? 'eager' : 'lazy'}
-                  sizes="(max-width: 640px) 50vw, (max-width: 900px) 33vw, 270px"
                 />
               ) : (
                 <span className="photo-grid-missing">{photo.title}</span>
