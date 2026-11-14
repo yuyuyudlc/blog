@@ -8,11 +8,11 @@ import './index.css';
  * category; the half mat in the middle is the fifth room. Laid out in
  * the auspicious pattern where no four corners ever meet.
  */
-export default function TatamiPlan({ stats = {}, activeSlug = '' }) {
+export default function TatamiPlan({ stats, activeSlug = '' }) {
   return (
     <nav className="tatami-plan" aria-label="文章分类">
       {siteConfig.categories.map((category) => {
-        const count = stats[category.slug] ?? 0;
+        const count = stats[category.slug];
         const isActive = activeSlug === category.slug;
 
         return (

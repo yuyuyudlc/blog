@@ -1,7 +1,7 @@
 ---
 title: AI 图像渲染示例
 category: AI
-date: June 30, 2026
+date: '2026-06-30'
 tags: [AI, Image, Markdown]
 summary: A compact sample entry for checking how images, captions, and surrounding Markdown content render in the journal layout.
 coverImage:

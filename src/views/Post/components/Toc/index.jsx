@@ -7,8 +7,8 @@ import './index.css';
  * Table of contents floating in the left margin on wide screens. It
  * stays faint and only marks the section currently being read.
  */
-export default function Toc({ headings = [] }) {
-  const [activeId, setActiveId] = useState(headings[0]?.id || '');
+export default function Toc({ headings }) {
+  const [activeId, setActiveId] = useState(headings[0]?.id);
 
   useEffect(() => {
     if (!headings.length) return undefined;

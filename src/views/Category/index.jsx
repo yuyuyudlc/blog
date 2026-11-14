@@ -43,8 +43,7 @@ export default async function Category({ params, searchParams }) {
 
   const isPhotos = isPhotoCategory(category);
   const posts = getAllPosts().filter((post) => post.category === category.label);
-  const pageValue = Array.isArray(query?.page) ? query.page[0] : query?.page;
-  const page = paginatePosts(posts, pageValue, isPhotos ? PHOTOS_PER_PAGE : undefined);
+  const page = paginatePosts(posts, query.page, isPhotos ? PHOTOS_PER_PAGE : undefined);
 
   return (
     <div className="category-view">

@@ -21,7 +21,7 @@ export default function Rooms({ stats }) {
             <li key={category.slug}>
               <Link href={`/category/${category.slug}`} className="home-rooms-link">
                 <span className="home-rooms-label">{category.label}</span>
-                <span className="home-rooms-count meta">{stats[category.slug] ?? 0} {getCategoryUnit(category)}</span>
+                <span className="home-rooms-count meta">{stats[category.slug]} {getCategoryUnit(category)}</span>
               </Link>
             </li>
           ))}

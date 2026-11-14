@@ -7,7 +7,6 @@ import sharp from 'sharp';
 import { ExifTool } from 'exiftool-vendored';
 import { preparePhoto } from './prepare-photo.mjs';
 import { hashPhoto } from './publish-photos.mjs';
-import { createPicuiClient } from './lib/picui.mjs';
 
 async function fixture(t) {
   const base = await fs.mkdtemp(path.join(os.tmpdir(), 'blog-prepare-test-'));
@@ -64,18 +63,4 @@ test('an impossible target size leaves the input unchanged', async (t) => {
   const before = await fs.readFile(f.input);
   await assert.rejects(preparePhoto({ ...f, maxBytes: 1, log() {} }), /超过大小限制/);
   assert.deepEqual(await fs.readFile(f.input), before);
-});
-
-test('oversized uploads fail before contacting PICUI', async () => {
-  const old = process.env.PICUI_MAX_FILE_MB;
-  process.env.PICUI_MAX_FILE_MB = '20';
-  let called = false;
-  const client = createPicuiClient({ token: 'test', fetchImpl() { called = true; throw new Error('should not send'); } });
-  try {
-    await assert.rejects(client.upload('large.jpg', Buffer.alloc(20 * 1024 * 1024 + 1)), /上传上限/);
-    assert.equal(called, false);
-  } finally {
-    if (old === undefined) delete process.env.PICUI_MAX_FILE_MB;
-    else process.env.PICUI_MAX_FILE_MB = old;
-  }
 });

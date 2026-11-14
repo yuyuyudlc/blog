@@ -2,6 +2,26 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { randomUUID } from 'node:crypto';
 
+export const ignoredPhotoEntries = new Set(['.gitkeep', '.DS_Store']);
+
+export async function photoFiles(directory) {
+  let entries;
+  try { entries = await fs.readdir(directory, { withFileTypes: true }); } catch (error) {
+    if (error.code === 'ENOENT') return [];
+    throw error;
+  }
+
+  const files = [];
+  for (const entry of entries.sort((a, b) => a.name.localeCompare(b.name))) {
+    if (ignoredPhotoEntries.has(entry.name)) continue;
+    const filename = path.join(directory, entry.name);
+    if (entry.isDirectory()) files.push(...await photoFiles(filename));
+    else if (entry.isFile()) files.push(filename);
+    else throw new Error(`${filename} 不是普通文件。`);
+  }
+  return files;
+}
+
 export async function readJson(filename, fallback) {
   try { return JSON.parse(await fs.readFile(filename, 'utf8')); } catch (error) {
     if (error.code === 'ENOENT') return fallback;

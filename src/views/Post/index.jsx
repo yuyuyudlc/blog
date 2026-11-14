@@ -1,14 +1,15 @@
 import { notFound } from 'next/navigation';
+import { LoopNav } from '@/components';
 import { siteConfig } from '@/config/site';
 import { getGiscusConfig } from '@/lib/giscus-config.mjs';
 import { isPhotoCategory } from '@/lib/categories';
+import { estimateReadingTime, renderMarkdown } from '@/lib/markdown';
 import {
   getAllPosts,
   getArticles,
   getCategoryByLabel,
   getLoopPosts,
   getPostBySlug,
-  isPhotoPost,
 } from '@/lib/posts';
 import Photo from '@/views/Photo';
 import {
@@ -17,7 +18,6 @@ import {
   CodeCopy,
   Comments,
   ImagePreview,
-  LoopNav,
   Toc,
 } from './components';
 import './index.css';
@@ -30,50 +30,48 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }) {
   const { slug } = await params;
-  const post = await getPostBySlug(slug);
+  const entry = getPostBySlug(slug);
 
-  if (!post) {
+  if (!entry) {
     return {
       title: siteConfig.title,
     };
   }
 
-  const description = isPhotoPost(post)
-    ? post.summary ?? [post.title, post.location].filter(Boolean).join(' · ')
-    : post.summary;
-
+  const { post } = entry;
   return {
     title: `${post.title} | ${siteConfig.name}`,
-    description,
+    description: post.summary,
   };
 }
 
 export default async function Post({ params }) {
   const { slug } = await params;
-  const post = await getPostBySlug(slug);
+  const entry = getPostBySlug(slug);
 
-  if (!post) {
+  if (!entry) {
     notFound();
   }
 
+  const { post, content } = entry;
   const category = getCategoryByLabel(post.category);
+  const { contentHtml, headings } = renderMarkdown(content);
 
   if (isPhotoCategory(category)) {
-    return <Photo post={post} category={category} />;
+    return <Photo post={post} category={category} contentHtml={contentHtml} />;
   }
 
   const { older, newer } = getLoopPosts(slug, getArticles());
-  const tags = Array.isArray(post.tags) ? post.tags : [];
 
   return (
     <article className="post-view">
-      <ArticleHeader post={post} category={category} />
-      <Toc headings={post.headings || []} />
-      <ArticleBody html={post.contentHtml} />
+      <ArticleHeader post={post} category={category} readingTime={estimateReadingTime(content)} />
+      <Toc headings={headings} />
+      <ArticleBody html={contentHtml} />
 
-      {tags.length > 0 && (
+      {post.tags.length > 0 && (
         <p className="post-view-tags meta">
-          {tags.map((tag) => (
+          {post.tags.map((tag) => (
             <span key={tag}>#{tag}</span>
           ))}
         </p>

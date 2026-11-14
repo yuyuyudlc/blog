@@ -7,65 +7,30 @@ import nextEnv from '@next/env';
 import { isPicuiImage } from '../src/config/images.mjs';
 import { createPicuiClient, imageLink, imageMimeTypes, checkImageSize, verifyImageViaSsh } from './lib/picui.mjs';
 import { createMetadataReader, photoMetadata } from './lib/photo-metadata.mjs';
-import { lock, readJson, writeJson, writeNewPost } from './lib/photo-files.mjs';
+import { lock, photoFiles, readJson, writeJson, writeNewPost } from './lib/photo-files.mjs';
 import { photoRecordErrors } from './lib/photo-records.mjs';
 
 export const projectDirectory = fileURLToPath(new URL('../', import.meta.url));
 export const hashPhoto = (bytes) => createHash('sha256').update(bytes).digest('hex');
 const md5 = (bytes) => createHash('md5').update(bytes).digest('hex');
-const hashPattern = /^[a-f0-9]{64}$/;
-
-export async function photoFiles(directory) {
-  let entries;
-  try { entries = await fs.readdir(directory, { withFileTypes: true }); } catch (error) {
-    if (error.code === 'ENOENT') return [];
-    throw error;
-  }
-  const files = [];
-  for (const entry of entries.sort((a, b) => a.name.localeCompare(b.name))) {
-    if (entry.isSymbolicLink()) continue;
-    const filename = path.join(directory, entry.name);
-    if (entry.isDirectory()) files.push(...await photoFiles(filename));
-    else if (entry.isFile() && imageMimeTypes[path.extname(entry.name).toLowerCase()]) files.push(filename);
-    else if (entry.isFile() && !entry.name.startsWith('.')) throw new Error(`暂不支持 ${entry.name}，请先导出为 JPG、PNG、WebP、GIF 或 AVIF。`);
-  }
-  return files;
-}
 
 async function publishedRecords(root) {
-  let files;
-  try { files = await fs.readdir(path.join(root, 'posts')); } catch (error) {
-    if (error.code === 'ENOENT') return new Map();
-    throw error;
-  }
+  const files = await fs.readdir(path.join(root, 'posts'));
   const records = new Map();
   for (const file of files.filter((file) => file.endsWith('.md'))) {
     const filename = path.join(root, 'posts', file);
     const { data } = matter(await fs.readFile(filename, 'utf8'));
-    if (data.category === 'photos' && hashPattern.test(data.photoHash || '')) {
-      records.set(data.photoHash, { filename, data });
-    }
+    if (data.category !== 'photos') continue;
+    const errors = photoRecordErrors(data);
+    if (errors.length) throw new Error(`${file}：${errors.join('，')}`);
+    records.set(data.photoHash, { filename, url: data.coverImage });
   }
   return records;
 }
 
-export async function verifyPhoto(url, expectedHash) {
+export async function verifyPhoto(url, expectedHash, downloadHash = verifyImageViaSsh) {
   if (!isPicuiImage(url)) throw new Error('图片地址不在本账号允许的 PICUI 路径内，原图已保留。');
-  if (process.env.PICUI_TRANSPORT === 'ssh') {
-    if (await verifyImageViaSsh(url) !== expectedHash) throw new Error('服务器核对的图床原图 SHA-256 不一致，发布副本已保留。');
-    return;
-  }
-  let response;
-  let bytes;
-  try {
-    response = await fetch(url, { headers: { Accept: 'image/*', 'User-Agent': 'Mozilla/5.0' }, redirect: 'error', signal: AbortSignal.timeout(120_000) });
-    if (response.ok && response.headers.get('content-type')?.startsWith('image/')) bytes = Buffer.from(await response.arrayBuffer());
-  } catch { throw new Error('无法完成图床外链下载验证，原图已保留，可重试。'); }
-  if (!response.ok || !response.headers.get('content-type')?.startsWith('image/')) {
-    await response.body?.cancel();
-    throw new Error('图床外链暂不可访问或返回内容不是图片，原图已保留。');
-  }
-  if (hashPhoto(bytes) !== expectedHash) {
+  if (await downloadHash(url) !== expectedHash) {
     throw new Error('图床原图与本地图片的 SHA-256 不一致，已停止删除原图。');
   }
 }
@@ -77,7 +42,7 @@ async function removeOriginal(filename, inputDirectory, hash, record, url) {
     throw new Error('图片路径发生变化，已停止删除。');
   }
   const data = matter(await fs.readFile(record, 'utf8')).data;
-  if (data.category !== 'photos' || data.photoHash !== hash || data.coverImage !== url || photoRecordErrors(data).length) {
+  if (data.category !== 'photos' || data.photoHash !== hash || data.coverImage !== url) {
     throw new Error('照片 MD 未正确保存或已被修改，原图已保留。');
   }
   if (hashPhoto(await fs.readFile(filename)) !== hash) {
@@ -103,6 +68,8 @@ export async function publishPhotos({
   let metadataTool;
   try {
     const files = await photoFiles(inputDirectory);
+    const unsupported = files.find((filename) => !imageMimeTypes[path.extname(filename).toLowerCase()]);
+    if (unsupported) throw new Error(`暂不支持 ${path.basename(unsupported)}，请先导出为 JPG、PNG、WebP、GIF 或 AVIF。`);
     const records = await publishedRecords(root);
     const journal = await readJson(journalFile, { version: 1, images: {} });
     if (journal.version !== 1 || !journal.images) throw new Error('照片发布记录格式无效。');
@@ -133,9 +100,8 @@ export async function publishPhotos({
       const checksum = md5(bytes);
       const existing = records.get(hash);
       if (existing) {
-        const url = imageLink({ url: existing.data.coverImage });
-        await verifyImage(url, hash);
-        await removeOriginal(filename, inputDirectory, hash, existing.filename, url);
+        await verifyImage(existing.url, hash);
+        await removeOriginal(filename, inputDirectory, hash, existing.filename, existing.url);
         result.reused += 1;
         result.deleted += 1;
         log(`${path.basename(filename)}：已发布，复用已有 MD，删除本地重复图片。`);
@@ -143,47 +109,42 @@ export async function publishPhotos({
       }
 
       const target = path.join(root, 'posts', postName(hash));
-      try { await fs.access(target); throw new Error(`目标 MD 已存在，原图已保留：${path.basename(target)}`); }
-      catch (error) { if (error.code !== 'ENOENT') throw error; }
-
       if (!metadataReader) metadataTool ||= createMetadataReader();
       const tags = await (metadataReader || metadataTool.read)(filename);
       const metadata = photoMetadata(filename, tags, { date, location });
-      let uploaded = journal.images[hash];
-      if (!uploaded?.url) {
+      let url = journal.images[hash]?.url;
+      if (!url) {
         log('检查图床中是否已有相同图片…');
         const remote = await remoteImage(checksum);
         if (remote) {
-          uploaded = { url: imageLink(remote), key: remote.key, md5: checksum };
+          url = imageLink(remote);
           result.reused += 1;
         } else {
-          journal.images[hash] = { state: 'pending', md5: checksum };
-          await writeJson(journalFile, journal);
           log('正在上传到 PICUI…');
           const response = await api().upload(filename, bytes);
-          uploaded = { url: imageLink(response), key: response.key, md5: checksum };
+          url = imageLink(response);
           result.uploaded += 1;
           inventory.set(checksum, { ...response, md5: checksum });
         }
-        journal.images[hash] = { ...uploaded, state: 'complete' };
+        journal.images[hash] = { url };
         await writeJson(journalFile, journal);
       } else { result.reused += 1; }
       log('核对外链原图 SHA-256…');
-      await verifyImage(uploaded.url, hash);
+      await verifyImage(url, hash);
 
       const { title, coverWidth, coverHeight } = metadata;
       const data = {
         title, category: 'photos', date: metadata.date,
         ...(metadata.location ? { location: metadata.location } : {}),
-        tags: ['Photo'], coverImage: uploaded.url,
+        tags: ['Photo'], coverImage: url,
         ...(coverWidth ? { coverWidth, coverHeight } : {}),
         photoHash: hash, photoMd5: checksum,
       };
       const content = matter.stringify('', data, { flowLevel: 1, lineWidth: -1, noRefs: true });
       await writePost(target, content, journalDirectory);
-      records.set(hash, { filename: target, data });
+      records.set(hash, { filename: target, url });
       result.created += 1;
-      await removeOriginal(filename, inputDirectory, hash, target, uploaded.url);
+      await removeOriginal(filename, inputDirectory, hash, target, url);
       result.deleted += 1;
       log(`${path.basename(filename)} → posts/${path.basename(target)}，已验证并删除本地图片。`);
     }

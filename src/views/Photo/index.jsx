@@ -1,9 +1,9 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import { LoopNav } from '@/components';
 import { photoVariantPath, photoVariantSizes } from '@/config/photo-variants.mjs';
-import { formatIsoDate, formatPostDate } from '@/lib/post-display.mjs';
+import { formatPostDate } from '@/lib/post-display.mjs';
 import { getLoopPosts, getPhotos } from '@/lib/posts';
-import { PhotoNav } from './components';
 import './index.css';
 
 /**
@@ -11,10 +11,9 @@ import './index.css';
  * shown uncropped at the largest size that fits the screen, wider than
  * the text column; clicking it opens the original file.
  */
-export default function Photo({ post, category }) {
+export default function Photo({ post, category, contentHtml }) {
   const backHref = `/category/${category.slug}`;
   const { older, newer } = getLoopPosts(post.slug, getPhotos());
-  const alt = post.coverAlt || post.title;
 
   return (
     <article className="photo-view">
@@ -22,37 +21,33 @@ export default function Photo({ post, category }) {
 
       <div className="photo-view-stage wide">
         <figure className="photo-view-figure">
-          {post.coverImage ? (
-            <a href={post.coverImage} className="photo-view-original" title="查看原图">
-              <Image
-                className="photo-view-image"
-                src={photoVariantPath(post.photoHash, photoVariantSizes.display)}
-                alt={alt}
-                width={post.coverWidth || 0}
-                height={post.coverHeight || 0}
-                unoptimized
-                preload
-              />
-            </a>
-          ) : (
-            <p className="photo-view-missing meta">这张照片还没有设置 coverImage。</p>
-          )}
+          <a href={post.coverImage} className="photo-view-original" title="查看原图">
+            <Image
+              className="photo-view-image"
+              src={photoVariantPath(post.photoHash, photoVariantSizes.display)}
+              alt={post.coverAlt}
+              width={post.coverWidth || 0}
+              height={post.coverHeight || 0}
+              unoptimized
+              preload
+            />
+          </a>
 
           {/* A table caption is exactly as wide as the photo above it */}
           <figcaption className="photo-view-caption">
             <h1 className="photo-view-title">{post.title}</h1>
             <p className="meta">
-              <time dateTime={formatIsoDate(post.date)}>{formatPostDate(post.date)}</time>
+              <time dateTime={post.date}>{formatPostDate(post.date)}</time>
               {post.location && <span> · {post.location}</span>}
             </p>
-            {post.contentHtml?.trim() && (
-              <div className="photo-view-note" dangerouslySetInnerHTML={{ __html: post.contentHtml }} />
+            {contentHtml.trim() && (
+              <div className="photo-view-note" dangerouslySetInnerHTML={{ __html: contentHtml }} />
             )}
           </figcaption>
         </figure>
       </div>
 
-      <PhotoNav older={older} newer={newer} backHref={backHref} />
+      <LoopNav older={older} newer={newer} isPhoto backHref={backHref} />
     </article>
   );
 }

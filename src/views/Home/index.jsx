@@ -5,10 +5,9 @@ import { Intro, Rooms } from './components';
 import './index.css';
 
 export default async function Home({ searchParams }) {
-  const params = await searchParams;
-  const pageValue = Array.isArray(params?.page) ? params.page[0] : params?.page;
+  const query = await searchParams;
   const allPosts = getAllPosts();
-  const page = paginatePosts(getArticles(allPosts), pageValue);
+  const page = paginatePosts(getArticles(allPosts), query.page);
   const isFirstPage = page.currentPage === 1;
 
   return (

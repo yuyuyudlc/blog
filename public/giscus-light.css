@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=Noto+Sans+SC:wght@400;500;600&display=swap");
+@import url("./giscus-base.css");
 
 /* Matches the cool neutral light theme used by dev.log Journal. */
 main {
@@ -85,49 +85,7 @@ main {
   --color-scale-blue-1: #e6ecfb;
   --color-social-reaction-bg-hover: var(--color-scale-gray-1);
   --color-social-reaction-bg-reacted-hover: var(--color-scale-blue-1);
-  font-family: "Noto Sans SC", sans-serif;
-}
-
-main .gsc-comment-box-textarea,
-main .form-control {
-  border-radius: 4px;
-  background-color: #fbfcfd;
-  box-shadow: none;
-  font-family: "Noto Sans SC", sans-serif;
-  line-height: 1.65;
-}
-
-main .btn,
-main .gsc-reactions-count,
-main .gsc-left-header em,
-main .gsc-comments-count {
-  font-family: "IBM Plex Mono", "Noto Sans SC", monospace;
-  letter-spacing: 0.01em;
-}
-
-main .btn {
-  border-radius: 4px;
-}
-
-main .gsc-comment-box,
-main .gsc-comment {
-  border-radius: 4px;
-}
-
-main .gsc-comment-box-tabs {
-  border-bottom-color: var(--color-border-muted);
-}
-
-main :is(a, button, [tabindex]):focus-visible {
-  outline: 2px solid #718096;
-  outline-offset: 2px;
-  box-shadow: none;
-}
-
-main .pagination-loader-container {
-  background-image: url("https://github.com/images/modules/pulls/progressive-disclosure-line.svg");
-}
-
-main .gsc-loading-image {
-  background-image: url("https://github.githubassets.com/images/mona-loading-default.gif");
+  --giscus-input-bg: #fbfcfd;
+  --giscus-pagination-image: url("https://github.com/images/modules/pulls/progressive-disclosure-line.svg");
+  --giscus-loading-image: url("https://github.githubassets.com/images/mona-loading-default.gif");
 }

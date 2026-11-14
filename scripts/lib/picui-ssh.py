@@ -10,12 +10,9 @@ sys.stderr.reconfigure(encoding="utf-8")
 sys.stdin.reconfigure(encoding="utf-8")
 
 REMOTE = r'''
-import base64,hashlib,json,secrets,sys,urllib.request,urllib.error,urllib.parse
+import base64,hashlib,json,secrets,sys,urllib.request,urllib.error
 data=json.load(sys.stdin)
 if data.get('verifyUrl'):
- url=urllib.parse.urlsplit(data['verifyUrl'])
- if url.scheme!='https' or url.hostname!='cdn.imgos.cn' or not url.path.startswith('/vip/19936/') or url.username or url.password or url.query:
-  raise ValueError('Unsupported image URL')
  with urllib.request.urlopen(urllib.request.Request(data['verifyUrl'],headers={'Accept':'image/*','User-Agent':'Mozilla/5.0'}),timeout=120) as response:
   if data.get('download'):
    print(json.dumps({'image':base64.b64encode(response.read()).decode('ascii')}))
@@ -28,8 +25,6 @@ if data.get('verifyUrl'):
   print(json.dumps({'status':response.status,'hash':digest.hexdigest(),'bytes':size,'contentType':response.headers.get('Content-Type','')}))
  sys.exit(0)
 endpoint=data['endpoint']
-if endpoint not in ('/profile','/upload') and not endpoint.startswith('/images?page='):
- raise ValueError('Unsupported PICUI endpoint')
 headers={'Accept':'application/json','Authorization':'Bearer '+data['token']}
 body=None
 if data.get('upload'):
@@ -78,7 +73,6 @@ def main():
         stderr.read()
         if stdout.channel.recv_exit_status() != 0:
             raise ValueError("Remote API request failed")
-        json.loads(output)
         print(output, end="")
     finally:
         client.close()

@@ -26,18 +26,6 @@
   outline-offset: 2px;
 }
 
-/* A photo post without an image yet: show its title on paper */
-.photo-grid-missing {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  padding: 12px;
-  font-size: var(--text-small);
-  text-align: center;
-  color: var(--text-muted);
-}
-
 .photo-grid-date {
   position: absolute;
   bottom: 8px;
@@ -54,11 +42,6 @@
 .photo-grid-item:hover .photo-grid-date,
 .photo-grid-item:focus-visible .photo-grid-date {
   opacity: 1;
-}
-
-.photo-grid-missing ~ .photo-grid-date {
-  color: var(--text-faint);
-  text-shadow: none;
 }
 
 .photo-grid-empty {

@@ -1,9 +1,7 @@
 import { spawn } from 'node:child_process';
-import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const apiUrl = 'https://picui.cn/api/v1';
 export const imageMimeTypes = {
   '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.png': 'image/png',
   '.webp': 'image/webp', '.gif': 'image/gif', '.avif': 'image/avif',
@@ -19,7 +17,7 @@ export function checkImageSize(bytes) {
 
 export function imageLink(data) {
   let url;
-  try { url = new URL(data?.links?.url ?? data?.url); } catch {
+  try { url = new URL(data?.links?.url); } catch {
     throw new Error('PICUI 没有返回有效图片外链，请在图片管理中检查。');
   }
   if (url.protocol !== 'https:' || url.username || url.password) {
@@ -68,33 +66,12 @@ export async function downloadImageViaSsh(url) {
   return Buffer.from(image, 'base64');
 }
 
-export function createPicuiClient({ token = process.env.PICUI_TOKEN?.trim(), fetchImpl = fetch } = {}) {
+export function createPicuiClient() {
+  const token = process.env.PICUI_TOKEN?.trim();
+  if (!token) throw new Error('请先在 .env.local 中设置 PICUI_TOKEN。');
+
   async function request(endpoint, upload) {
-    if (!token) throw new Error('请先在 .env.local 中设置 PICUI_TOKEN。');
-    let status;
-    let result;
-    if (process.env.PICUI_TRANSPORT === 'ssh') {
-      const reply = await sshRequest({ token, endpoint, upload });
-      ({ status, body: result } = reply);
-    } else {
-      let response;
-      const options = {};
-      if (upload) {
-        const form = new FormData();
-        form.set('file', new Blob([Buffer.from(upload.bytes, 'base64')], { type: upload.mimeType }), upload.filename);
-        form.set('permission', '1');
-        options.method = 'POST';
-        options.body = form;
-      }
-      try {
-        response = await fetchImpl(`${apiUrl}${endpoint}`, {
-          ...options, headers: { Accept: 'application/json', Authorization: `Bearer ${token}` },
-          redirect: 'error', signal: AbortSignal.timeout(90_000),
-        });
-      } catch { throw new Error('无法连接 PICUI，请检查网络或使用已配置的 SSH 上传转发。'); }
-      status = response.status;
-      try { result = await response.json(); } catch { throw new Error(`PICUI 返回了非 JSON 响应（HTTP ${status}）。`); }
-    }
+    const { status, body: result } = await sshRequest({ token, endpoint, upload });
     if (status === 401) throw new Error('PICUI token 无效或已过期。');
     if (status === 403) throw new Error('PICUI 拒绝请求，请检查账号的 API 权限。');
     if (status === 429) throw new Error('PICUI 请求过于频繁，请稍后再试。');
@@ -106,11 +83,9 @@ export function createPicuiClient({ token = process.env.PICUI_TOKEN?.trim(), fet
   return {
     profile: () => request('/profile'),
     images: (page) => request(`/images?page=${page}&order=newest`),
-    async upload(filename, bytes) {
-      const data = bytes || await readFile(filename);
-      checkImageSize(data.length);
+    upload(filename, bytes) {
       return request('/upload', {
-        filename: path.basename(filename), bytes: data.toString('base64'),
+        filename: path.basename(filename), bytes: bytes.toString('base64'),
         mimeType: imageMimeTypes[path.extname(filename).toLowerCase()],
       });
     },

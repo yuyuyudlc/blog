@@ -11,7 +11,7 @@ npm run photos:publish
 ## 自动填写的内容
 
 - 标题：原图片文件名去掉扩展名。
-- 日期：EXIF 拍摄日期，保留拍摄时的日历日期，不使用上传日期或文件修改日期代替。
+- 日期：EXIF 拍摄日期，保留拍摄时的日历日期，在 Markdown 中写成带引号的 `YYYY-MM-DD` 字符串。
 - 地点：优先使用图片中已有的地点文字，否则使用 EXIF GPS 和本地离线城市数据库推断。没有地点时省略；城市级结果不代表具体景点。
 - `coverImage`：PICUI 返回的 HTTPS 原图链接。
 - `coverWidth`、`coverHeight`：图片尺寸，考虑 EXIF 旋转方向。
@@ -37,7 +37,7 @@ npm run photos:publish -- --date=2026-10-26 "--location=京都 · 鸭川"
 
 1. 计算原文件 SHA-256，与已发布照片 MD 中的 `photoHash` 比较。
 2. 相同内容直接复用已有 MD 和链接，即使文件改名也不会重传；已有标题、日期、正文修改都保留。同名但不同内容会生成独立记录。
-3. 对新图片先检查 PICUI 的 MD5；云端已有相同文件时复用，否则上传。中断信息及时保存到本地 `.photo-publish/`，重试前会核对云端文件。
+3. 对新图片先检查 PICUI 的 MD5；云端已有相同文件时复用，否则上传。拿到外链后保存到 `.photo-publish/`，重试时可以复用外链。
 4. 下载图床原图，确认可访问且 SHA-256 与本地一致。
 5. 完整保存 MD，再重新核对 MD 和本地文件未被修改，最后删除对应输入图片。
 
@@ -63,7 +63,7 @@ token 放在 Git 忽略的 `.env.local` 中，变量名为 `PICUI_TOKEN`，不�
 npm run image:upload -- --check
 ```
 
-本机无法直连 API 时，已支持通过私有配置 `PICUI_TRANSPORT=ssh` 转发，使用 `PICUI_SSH_HOST`、`PICUI_SSH_USER`、`PICUI_SSH_PASSWORD`、`PICUI_SSH_FINGERPRINT`。转发需要 Python 与 paramiko，并校验服务器指纹；这些连接信息不进入 MD、仓库或浏览器代码。
+上传和下载校验都通过 SSH 转发。在 `.env.local` 配置 `PICUI_SSH_HOST`、`PICUI_SSH_USER`、`PICUI_SSH_PASSWORD` 和 `PICUI_SSH_FINGERPRINT`。本机需要 Python 与 paramiko，服务器需要 Python 3。转发时会校验服务器指纹。
 
 `npm run image:upload -- "路径.jpg"` 仍可用于文章配图，但该命令只上传并返回链接，不生成照片 MD，也不删除图片。
 

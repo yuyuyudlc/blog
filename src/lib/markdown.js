@@ -26,7 +26,7 @@ hljs.registerAliases(['html', 'svg'], { languageName: 'xml' });
 hljs.registerAliases(['md'], { languageName: 'markdown' });
 
 const escapeHtml = (value) =>
-  String(value ?? '')
+  value
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
@@ -34,7 +34,7 @@ const escapeHtml = (value) =>
     .replace(/'/g, '&#39;');
 
 const stripHtmlTags = (value) =>
-  String(value ?? '')
+  value
     .replace(/<[^>]+>/g, '')
     .replace(/&quot;/g, '"')
     .replace(/&#39;/g, "'")
@@ -51,8 +51,8 @@ const slugifyHeading = (value) =>
 
 const CHARACTERS_PER_MINUTE = 400;
 
-export function getReadableCharacterCount(markdownText) {
-  const readableText = String(markdownText ?? '')
+function getReadableCharacterCount(markdownText) {
+  const readableText = markdownText
     .replace(/```[^\n]*\n([\s\S]*?)```/g, '$1')
     .replace(/`([^`]+)`/g, '$1')
     .replace(/!\[[^\]]*\]\([^)]*\)/g, '')
@@ -66,12 +66,10 @@ export function getReadableCharacterCount(markdownText) {
 }
 
 export function estimateReadingTime(markdownText) {
-  const minutes = Math.max(
+  return Math.max(
     1,
     Math.ceil(getReadableCharacterCount(markdownText) / CHARACTERS_PER_MINUTE),
   );
-
-  return `${minutes} min read`;
 }
 
 /**
@@ -109,10 +107,10 @@ export function renderMarkdown(markdownText) {
 
         return `<h${depth} id="${safeId}">${anchor}${innerHtml}</h${depth}>`;
       },
-      code({ text, lang }) {
-        const parts = String(lang ?? '').trim().split(/\s+/).filter(Boolean);
-        const rawLang = (parts[0] || '').toLowerCase();
-        const filename = parts.slice(1).join(' ');
+      code({ text, lang = '' }) {
+        const [language, ...filenameParts] = lang.trim().split(/\s+/);
+        const rawLang = language.toLowerCase();
+        const filename = filenameParts.join(' ');
         const canHighlight = rawLang && hljs.getLanguage(rawLang);
         const highlightedHtml = canHighlight
           ? hljs.highlight(text, { language: rawLang, ignoreIllegals: true }).value

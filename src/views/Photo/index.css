@@ -34,10 +34,6 @@
   max-height: 82vh;
 }
 
-.photo-view-missing {
-  padding: 96px 0;
-}
-
 .photo-view-caption {
   display: table-caption;
   caption-side: bottom;

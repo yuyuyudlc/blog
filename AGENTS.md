@@ -10,7 +10,7 @@
 ---
 title: 文章标题
 category: 前端
-date: 2026-08-29
+date: '2026-08-29'
 tags: [React, Next.js, CSS]
 summary: 显示在首页和文章列表中的简短摘要，建议控制在一到两句话。
 coverImage: /images/my-cover.jpg
@@ -20,7 +20,7 @@ coverAlt: 文章封面的文字说明
 
 - `title`、`category`、`date`、`tags` 和 `summary` 是完整录入一篇文章所需的字段。
 - `category` 必须与站点配置中的分类名称完全一致，只能填写 `前端`、`后端`、`AI`、`随记` 或 `photos`。
-- `date` 使用 `YYYY-MM-DD` 格式。文章按日期从新到旧排序，日期最新的文章会成为首页置顶文章。
+- `date` 使用带引号的 `YYYY-MM-DD` 字符串。文章按日期从新到旧排序，日期最新的文章会成为首页置顶文章。
 - 不要填写 `readingTime`。程序会清理 Markdown 标记后统计正文可读字符数，按每分钟 400 字符向上取整，并自动显示阅读时间，最少为 1 分钟。
 - `tags` 使用 YAML 行内数组，例如 `[React, Next.js, CSS]`。
 - `summary` 应保持简洁，因为它会用于文章预览和页面元数据描述。
@@ -38,7 +38,7 @@ coverAlt: 文章封面的文字说明
 ---
 title: 鸭川的傍晚
 category: photos
-date: 2026-10-20
+date: '2026-10-20'
 tags: [Photo]
 location: 京都 · 鸭川
 coverImage: https://cdn.imgos.cn/vip/19936/example.jpg

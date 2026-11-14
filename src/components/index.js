@@ -2,6 +2,7 @@
 // views and routes; components inside this folder import each other by
 // relative path to avoid circular imports through this barrel.
 export { default as AppShell } from './AppShell';
+export { default as LoopNav } from './LoopNav';
 export { default as Pagination } from './Pagination';
 export { default as PostList } from './PostList';
 export { default as PostRow } from './PostRow';

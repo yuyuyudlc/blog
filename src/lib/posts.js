@@ -2,11 +2,6 @@ import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
 import { siteConfig } from '@/config/site';
-import {
-  estimateReadingTime,
-  getReadableCharacterCount,
-  renderMarkdown,
-} from '@/lib/markdown';
 
 import { getCategoryByLabel, isPhotoCategory } from '@/lib/categories';
 
@@ -18,53 +13,31 @@ const postsDirectory = path.join(process.cwd(), 'posts');
  * Returns all Markdown posts sorted from newest to oldest.
  */
 export function getAllPosts() {
-  if (!fs.existsSync(postsDirectory)) {
-    return [];
-  }
-
   const fileNames = fs.readdirSync(postsDirectory);
   const allPostsData = fileNames
     .filter((fileName) => fileName.endsWith('.md'))
-    .map((fileName) => {
-      const slug = fileName.replace(/\.md$/, '');
-      const fullPath = path.join(postsDirectory, fileName);
-      const fileContents = fs.readFileSync(fullPath, 'utf8');
-      const { data, content } = matter(fileContents);
-      const charCount = getReadableCharacterCount(content);
+    .map((fileName) => readPost(path.join(postsDirectory, fileName)).post);
 
-      return {
-        slug,
-        ...data,
-        charCount,
-        readingTime: estimateReadingTime(content),
-      };
-    });
-
-  return allPostsData.sort((a, b) => new Date(b.date) - new Date(a.date));
+  return allPostsData.sort((a, b) => b.date.localeCompare(a.date));
 }
 
-/**
- * Loads a single post by slug, including rendered HTML and TOC headings.
- */
-export async function getPostBySlug(slug) {
+export function getPostBySlug(slug) {
   const fullPath = path.join(postsDirectory, `${slug}.md`);
   if (!fs.existsSync(fullPath)) {
     return null;
   }
 
-  const fileContents = fs.readFileSync(fullPath, 'utf8');
-  const { data, content } = matter(fileContents);
-  const { contentHtml, headings } = renderMarkdown(content);
-  const charCount = getReadableCharacterCount(content);
+  return readPost(fullPath);
+}
 
-  return {
-    slug,
-    contentHtml,
-    headings,
-    ...data,
-    charCount,
-    readingTime: estimateReadingTime(content),
-  };
+function readPost(filename) {
+  const { data, content } = matter(fs.readFileSync(filename, 'utf8'));
+  const post = { ...data, slug: path.basename(filename, '.md') };
+  if (isPhotoPost(post)) {
+    post.summary ??= [post.title, post.location].filter(Boolean).join(' · ');
+    post.coverAlt ||= post.title;
+  }
+  return { post, content };
 }
 
 export function isPhotoPost(post) {

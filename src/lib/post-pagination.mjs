@@ -1,7 +1,8 @@
-export const POSTS_PER_PAGE = 12;
+const POSTS_PER_PAGE = 12;
 
-export function normalizePostPage(value, totalPages) {
-  const parsedPage = Number.parseInt(String(value ?? ''), 10);
+function normalizePostPage(value, totalPages) {
+  const page = Array.isArray(value) ? value[0] : value;
+  const parsedPage = Number.parseInt(page, 10);
   if (!Number.isFinite(parsedPage)) return 1;
   return Math.min(Math.max(parsedPage, 1), totalPages);
 }

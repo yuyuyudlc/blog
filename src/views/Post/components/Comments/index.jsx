@@ -19,7 +19,6 @@ const GISCUS_THEME_FILES = {
 };
 
 function readTheme() {
-  if (typeof document === 'undefined') return 'preferred_color_scheme';
   const colorScheme = document.documentElement.getAttribute('data-theme') === 'light'
     ? 'light'
     : 'dark';

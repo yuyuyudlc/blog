@@ -1,0 +1,47 @@
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=Noto+Sans+SC:wght@400;500;600&display=swap");
+
+main,
+main .gsc-comment-box-textarea,
+main .form-control {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+
+main .gsc-comment-box-textarea,
+main .form-control {
+  border-radius: 4px;
+  background-color: var(--giscus-input-bg);
+  box-shadow: none;
+  line-height: 1.65;
+}
+
+main .btn,
+main .gsc-reactions-count,
+main .gsc-left-header em,
+main .gsc-comments-count {
+  font-family: "IBM Plex Mono", "PingFang SC", "Microsoft YaHei", monospace;
+  letter-spacing: 0.01em;
+}
+
+main .btn,
+main .gsc-comment-box,
+main .gsc-comment {
+  border-radius: 4px;
+}
+
+main .gsc-comment-box-tabs {
+  border-bottom-color: var(--color-border-muted);
+}
+
+main :is(a, button, [tabindex]):focus-visible {
+  outline: 2px solid var(--color-accent-emphasis);
+  outline-offset: 2px;
+  box-shadow: none;
+}
+
+main .pagination-loader-container {
+  background-image: var(--giscus-pagination-image);
+}
+
+main .gsc-loading-image {
+  background-image: var(--giscus-loading-image);
+}

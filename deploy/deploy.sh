@@ -17,7 +17,6 @@ if [[ ! -d "$mirror" ]]; then
 fi
 [[ $(git --git-dir="$mirror" remote get-url origin) == "$repository" ]] || { echo 'Unexpected origin.' >&2; exit 1; }
 git --git-dir="$mirror" fetch --prune origin '+refs/heads/main:refs/remotes/origin/main'
-git --git-dir="$mirror" cat-file -e "$revision^{commit}"
 git --git-dir="$mirror" merge-base --is-ancestor "$revision" refs/remotes/origin/main
 
 release="$(date -u +%Y%m%dT%H%M%SZ)-${revision:0:12}"

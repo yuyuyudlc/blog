@@ -2,7 +2,7 @@ import { readFile, stat } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import nextEnv from '@next/env';
-import { createPicuiClient, imageLink, imageMimeTypes } from './lib/picui.mjs';
+import { checkImageSize, createPicuiClient, imageLink, imageMimeTypes } from './lib/picui.mjs';
 
 const projectDirectory = fileURLToPath(new URL('../', import.meta.url));
 
@@ -39,9 +39,7 @@ async function main() {
   }
 
   nextEnv.loadEnvConfig(projectDirectory, false, { info() {}, error() {} });
-  const token = process.env.PICUI_TOKEN?.trim();
-  if (!token) throw new Error('请先在 .env.local 中设置 PICUI_TOKEN。');
-  const client = createPicuiClient({ token });
+  const client = createPicuiClient();
 
   if (checkOnly) {
     const profile = await client.profile();
@@ -54,8 +52,7 @@ async function main() {
   const images = [];
   for (const file of files) {
     const filename = path.resolve(file);
-    const mimeType = imageMimeTypes[path.extname(filename).toLowerCase()];
-    if (!mimeType) throw new Error('支持上传 JPG、PNG、WebP、GIF 和 AVIF 图片。');
+    if (!imageMimeTypes[path.extname(filename).toLowerCase()]) throw new Error('支持上传 JPG、PNG、WebP、GIF 和 AVIF 图片。');
     let info;
     try {
       info = await stat(filename);
@@ -63,16 +60,17 @@ async function main() {
       throw new Error(`找不到图片：${file}`);
     }
     if (!info.isFile() || info.size === 0) throw new Error(`图片文件为空或不是文件：${file}`);
-    images.push({ filename, mimeType });
+    checkImageSize(info.size);
+    images.push(filename);
   }
 
   // Upload sequentially; never retry uploads automatically and create duplicates.
-  for (const image of images) {
-    const file = await readFile(image.filename);
-    const data = await client.upload(image.filename, file);
+  for (const filename of images) {
+    const file = await readFile(filename);
+    const data = await client.upload(filename, file);
     const url = imageLink(data);
-    const alt = path.parse(image.filename).name.replace(/[\[\]\\\r\n]/g, ' ');
-    const result = { filename: path.basename(image.filename), url, markdown: `![${alt}](<${url}>)` };
+    const alt = path.parse(filename).name.replace(/[\[\]\\\r\n]/g, ' ');
+    const result = { filename: path.basename(filename), url, markdown: `![${alt}](<${url}>)` };
     if (jsonOutput) {
       console.log(JSON.stringify(result));
     } else {

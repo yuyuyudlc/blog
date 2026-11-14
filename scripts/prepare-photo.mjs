@@ -7,7 +7,7 @@ import sharp from 'sharp';
 import { hashPhoto, projectDirectory } from './publish-photos.mjs';
 
 /** Prepare a JPEG publishing copy, preserving the original outside Git. */
-export async function preparePhoto({ root = projectDirectory, filename, originalFilename, archiveDirectory, maxEdge = 4000, maxBytes = 19.5 * 1024 * 1024, log = console.log }) {
+export async function preparePhoto({ root = projectDirectory, filename, archiveDirectory, maxEdge = 4000, maxBytes = 19.5 * 1024 * 1024, log = console.log }) {
   root = path.resolve(root);
   const input = await fs.realpath(path.resolve(root, filename));
   const inbox = await fs.realpath(path.join(root, 'photo'));
@@ -16,9 +16,7 @@ export async function preparePhoto({ root = projectDirectory, filename, original
     throw new Error('请指定 photo/ 中的 JPG 或 JPEG 原图。');
   }
   if (!Number.isInteger(maxEdge) || maxEdge < 0) throw new Error('maxEdge 必须为非负整数，0 表示保留原尺寸。');
-  const inputHash = hashPhoto(await fs.readFile(input));
-  const source = originalFilename ? await fs.realpath(originalFilename) : input;
-  const original = await fs.readFile(source);
+  const original = await fs.readFile(input);
   const originalHash = hashPhoto(original);
   const before = await sharp(original).metadata();
   let output;
@@ -43,10 +41,9 @@ export async function preparePhoto({ root = projectDirectory, filename, original
   try {
     if (hashPhoto(await fs.readFile(backup)) !== originalHash) backup = path.resolve(archiveRoot, `${name.name}-${originalHash.slice(0, 12)}${name.ext}`);
   } catch (error) { if (error.code !== 'ENOENT') throw error; }
-  if (path.dirname(backup) !== archiveRoot) throw new Error('备份路径无效。');
-  try { await fs.copyFile(source, backup, constants.COPYFILE_EXCL); }
+  try { await fs.copyFile(input, backup, constants.COPYFILE_EXCL); }
   catch (error) { if (error.code !== 'EEXIST') throw error; }
-  if (hashPhoto(await fs.readFile(backup)) !== originalHash || hashPhoto(await fs.readFile(input)) !== inputHash) {
+  if (hashPhoto(await fs.readFile(backup)) !== originalHash || hashPhoto(await fs.readFile(input)) !== originalHash) {
     throw new Error('原图备份校验失败或原图被修改，未替换发布文件。');
   }
   const temporary = path.join(root, '.photo-publish', `${randomUUID()}.jpg`);

@@ -1,22 +1,8 @@
 import "./globals.css";
-import { IBM_Plex_Mono, Noto_Sans_SC, Noto_Serif_SC } from "next/font/google";
+import { IBM_Plex_Mono } from "next/font/google";
 import Script from "next/script";
 import { AppShell } from "@/components";
 import { siteConfig } from "@/config/site";
-
-const notoSansSC = Noto_Sans_SC({
-  weight: "variable",
-  variable: "--font-noto-sans-sc",
-  display: "swap",
-  preload: false,
-});
-
-const notoSerifSC = Noto_Serif_SC({
-  weight: "variable",
-  variable: "--font-noto-serif-sc",
-  display: "swap",
-  preload: false,
-});
 
 const ibmPlexMono = IBM_Plex_Mono({
   weight: ["400", "500", "600", "700"],
@@ -47,7 +33,7 @@ export default function RootLayout({ children }) {
   return (
     <html
       lang="zh-CN"
-      className={`${notoSansSC.variable} ${notoSerifSC.variable} ${ibmPlexMono.variable}`}
+      className={ibmPlexMono.variable}
       suppressHydrationWarning
     >
       <body id="top">

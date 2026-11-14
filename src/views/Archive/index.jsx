@@ -1,6 +1,5 @@
 import { PostList } from '@/components';
 import { siteConfig } from '@/config/site';
-import { parsePostDate } from '@/lib/post-display.mjs';
 import { getArticles } from '@/lib/posts';
 import { ArchiveHeader } from './components';
 import './index.css';
@@ -14,8 +13,7 @@ function groupPostsByYear(posts) {
   const groups = new Map();
 
   posts.forEach((post) => {
-    const parsed = parsePostDate(post.date);
-    const year = parsed ? String(parsed.getUTCFullYear()) : '其他';
+    const year = post.date.slice(0, 4);
     if (!groups.has(year)) {
       groups.set(year, []);
     }

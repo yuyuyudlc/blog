@@ -56,6 +56,7 @@ test('publish generates complete MD using filename and EXIF, then deletes the ve
   const root = await fixture(t);
   const source = path.join(root, 'photo/鸭川傍晚.png');
   await fs.writeFile(source, 'image-a');
+  await fs.writeFile(path.join(root, 'photo/.DS_Store'), 'metadata');
   const client = mockClient();
   const result = await run(root, client);
   const [record] = await records(root);
@@ -68,8 +69,27 @@ test('publish generates complete MD using filename and EXIF, then deletes the ve
   assert.equal(record.data.coverImage, `${base}test-1.png`);
   assert.match(record.name, /^[a-z-]+\.md$/);
   assert.match(record.raw, /tags: \[Photo\]/);
+  assert.match(record.raw, /^date: '2026-10-20'$/m);
   await assert.rejects(fs.access(source), { code: 'ENOENT' });
+  assert.equal(await checkPhotos({ directory: root }), true);
   assert.deepEqual(result, { uploaded: 1, reused: 0, created: 1, deleted: 1 });
+});
+
+test('oversized photos fail before contacting PICUI', async (t) => {
+  const root = await fixture(t);
+  const source = path.join(root, 'photo/large.jpg');
+  await fs.writeFile(source, '');
+  await fs.truncate(source, 20 * 1024 * 1024 + 1);
+  const old = process.env.PICUI_MAX_FILE_MB;
+  process.env.PICUI_MAX_FILE_MB = '20';
+  t.after(() => {
+    if (old === undefined) delete process.env.PICUI_MAX_FILE_MB;
+    else process.env.PICUI_MAX_FILE_MB = old;
+  });
+  const client = mockClient();
+  await assert.rejects(run(root, client), /上传上限/);
+  assert.deepEqual(client.calls, { uploads: 0, lists: 0 });
+  await fs.access(source);
 });
 
 test('renamed copies reuse SHA-256, preserve edited MD, and do not re-read metadata or upload', async (t) => {
@@ -192,10 +212,8 @@ test('metadata uses capture calendar date, handles rotation, and rejects impossi
 });
 
 test('verification requires the downloaded image to match SHA-256', async () => {
-  const previous = globalThis.fetch;
-  globalThis.fetch = async () => new Response(Buffer.from('wrong-image'), { headers: { 'content-type': 'image/png' } });
-  try { await assert.rejects(verifyPhoto(`${base}verify.png`, hashPhoto(Buffer.from('original'))), /SHA-256 不一致/); }
-  finally { globalThis.fetch = previous; }
+  const downloadHash = async () => hashPhoto(Buffer.from('wrong-image'));
+  await assert.rejects(verifyPhoto(`${base}verify.png`, hashPhoto(Buffer.from('original')), downloadHash), /SHA-256 不一致/);
 });
 
 test('concurrent publishing cannot upload or delete the same input twice', async (t) => {
@@ -233,13 +251,16 @@ test('staged checks reject raw images and inspect staged MD rather than working 
   await fs.writeFile(path.join(root, 'posts', record.name), matter.stringify('', { ...record.data, coverImage: 'photo/local.png' }));
   assert.equal(await checkPhotos({ directory: root, staged: true }), true);
   await assert.rejects(checkPhotos({ directory: root }), /HTTPS/);
+  await fs.writeFile(path.join(root, 'posts/article.md'), '---\ndate: 2026-10-20\n---\n');
+  git('add', 'posts/article.md');
+  await assert.rejects(checkPhotos({ directory: root, staged: true }), /article\.md：date 必须为带引号/);
 });
 
 test('SSH relay accepts UTF-8 Chinese filenames before validating connection settings', (t) => {
   const result = spawnSync(process.platform === 'win32' ? 'python' : 'python3', ['scripts/lib/picui-ssh.py'], {
     input: JSON.stringify({ filename: '五条坂夜晚.jpg', ssh: {} }), encoding: 'utf8', windowsHide: true,
   });
-  if (result.error?.code === 'ENOENT') { t.skip('Optional Python transport is not installed'); return; }
+  if (result.error?.code === 'ENOENT') { t.skip('Python is not installed'); return; }
   assert.equal(result.status, 1);
   assert.match(result.stderr, /ValueError/);
   assert.doesNotMatch(result.stderr, /UnicodeDecodeError/);

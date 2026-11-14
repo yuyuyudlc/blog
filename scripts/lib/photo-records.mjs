@@ -8,8 +8,7 @@ export function photoRecordErrors(data) {
   if (data.summary !== undefined && (typeof data.summary !== 'string' || !data.summary.trim())) {
     errors.push('summary 必须为非空文本');
   }
-  const date = data.date instanceof Date ? data.date.toISOString().slice(0, 10) : data.date;
-  if (!validDate(date)) errors.push('date 必须为 YYYY-MM-DD');
+  if (!validDate(data.date)) errors.push('date 必须为带引号的 YYYY-MM-DD 字符串');
   if (!Array.isArray(data.tags) || data.tags.some((tag) => typeof tag !== 'string')) errors.push('tags 必须为数组');
   try {
     const url = new URL(data.coverImage);
