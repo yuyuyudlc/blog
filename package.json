@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "@giscus/react": "^3.1.0",
+    "@next/env": "16.2.9",
     "@radix-ui/react-dialog": "^1.1.17",
     "gray-matter": "^4.0.3",
     "highlight.js": "^11.11.1",
